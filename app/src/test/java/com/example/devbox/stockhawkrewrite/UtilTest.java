@@ -1,17 +1,17 @@
 package com.example.devbox.stockhawkrewrite;
 
+import com.example.devbox.stockhawkrewrite.model.StockDto;
 import com.example.devbox.stockhawkrewrite.model.Util;
 import com.github.mikephil.charting.data.Entry;
 
 import junit.framework.Assert;
 
 import org.junit.Test;
-import org.junit.runners.Parameterized;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import yahoofinance.Stock;
 import yahoofinance.YahooFinance;
@@ -111,6 +111,7 @@ public class UtilTest {
     private List<Entry> priceEntryList;
 
 
+    
     @Test
     public void parseCSVtoEntryListTest() {
         String stringCSV = givenCSVDataString();
@@ -136,6 +137,8 @@ public class UtilTest {
         }
     }
 
+    
+    
     @Test
     public void historicalQuoteListToChartEntryListConversion() {
        Stock testStock = givenAValidStockObject();
@@ -153,7 +156,6 @@ public class UtilTest {
         }
         return testStock;
     }
-
 
     private List<Entry> whenConvertingBetweenListTypes(Stock stock) {
         List<Entry> result = new ArrayList<>();
@@ -182,5 +184,47 @@ public class UtilTest {
             e.printStackTrace();
         }
     }
+    
+    
+    
+    @Test
+    public void convertStockMaptoStockDtoTest(){
+        String[] validTickers = {"TSLA", "IBM", "BA"};
+        Map<String, Stock> stockMap = givenAValidStockMap(validTickers);
+        List<StockDto> results = whenConvertingFromStockMapToStockDtoList(stockMap);
+        returnsValidResults(stockMap, results);
+    }
 
+    private Map<String, Stock> givenAValidStockMap(String[] validTickers) {
+        Map<String, Stock> results = null;
+        try {
+            results = YahooFinance.get(validTickers);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Assert.assertNotNull("Failed to fetch date for the Map<String, Stock>", results);
+        return results;
+    }
+
+    private List<StockDto> whenConvertingFromStockMapToStockDtoList(Map<String, Stock> stockMap) {
+        List<StockDto> results  = Util.convertStockMapToStockDtoList(stockMap);
+        Assert.assertNotNull(results);
+        Assert.assertTrue(results.size() > 0);
+        return results;
+    }
+
+    private void returnsValidResults(Map<String, Stock> stockMap, List<StockDto> stockDtoList) {
+        for(StockDto stockDto : stockDtoList){
+            Assert.assertTrue(stockMap.containsKey(stockDto.getmTicker()));
+            Stock stock = stockMap.get(stockDto.getmTicker());
+            Assert.assertEquals(stock.getQuote().getAsk().floatValue(), stockDto.getmAsk());
+            Assert.assertEquals(stock.getQuote().getBid().floatValue(), stockDto.getmBid());
+            Assert.assertEquals(stock.getQuote().getChange().floatValue(), stockDto.getmChangeCurrency());
+            Assert.assertEquals(stock.getQuote().getChangeInPercent().floatValue(), stockDto.getmChangePercent());
+            Assert.assertEquals(stock.getQuote().getYearHigh().floatValue(), stockDto.getmYearHigh());
+            Assert.assertEquals(stock.getQuote().getYearLow().floatValue(), stockDto.getmYearLow());
+            Assert.assertEquals(stock.getName(), stockDto.getName());
+            aValidEntryListIsCreated(stock, stockDto.getmHistory());
+        }
+    }
 }

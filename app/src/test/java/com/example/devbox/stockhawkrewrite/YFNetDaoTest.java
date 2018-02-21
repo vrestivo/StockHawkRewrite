@@ -3,12 +3,13 @@ package com.example.devbox.stockhawkrewrite;
 import com.example.devbox.stockhawkrewrite.model.IYFNetDao;
 import com.example.devbox.stockhawkrewrite.model.StockDto;
 import com.example.devbox.stockhawkrewrite.model.YFNetDao;
-
 import junit.framework.Assert;
-
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
 
 /**
  * Created by devbox on 2/20/18.
@@ -17,15 +18,14 @@ import java.util.List;
 public class YFNetDaoTest {
 
     private IYFNetDao mYFNetDao;
-    private String[] mStocksToSearch;
     private String[] mValidStockTickers = {"TSLA", "IBM", "BA"};
     private List<StockDto> mStockDtoList;
 
 
     @Test
-    public void yFNetDaotest(){
+    public void yFNetDaotest() {
         givenInitializedYFNetDao();
-        whenSearchForValidStocks();
+        whenFetchingValidStocks();
         returnsStockDtoList();
     }
 
@@ -34,17 +34,15 @@ public class YFNetDaoTest {
         Assert.assertNotNull(mYFNetDao);
     }
 
-    private void whenSearchForValidStocks() {
-        mStockDtoList = mYFNetDao.fetchStocks();
+    private void whenFetchingValidStocks() {
+        mStockDtoList = mYFNetDao.fetchStocks(mValidStockTickers);
         Assert.assertNotNull(mStockDtoList);
     }
 
     private void returnsStockDtoList() {
-        int counter = 0;
-
         for(StockDto stockDto : mStockDtoList){
-            Assert.assertEquals(stockDto.getmTicker(), mValidStockTickers[counter]);
-            counter++;
+            List<String> tickers = Arrays.asList(mValidStockTickers);
+            tickers.contains(stockDto.getmTicker());
         }
     }
 

@@ -22,15 +22,22 @@ public class Util {
 
 
 
-    public static List<IStockDto> convertStockData(Map<String, Stock> stockData) {
-        //TODO implement
-        return null;
-    }
-
     public static String historicalStockQuoteToCSV(List<HistoricalQuote> historicalPriceData) {
         //TODO implement
         return null;
     }
+
+
+    public static List<StockDto> convertStockMapToStockDtoList(Map<String, Stock> stockData) {
+        List<StockDto> results = new ArrayList<>();
+        if(stockData!=null && stockData.size() > 0) {
+            for (Stock stock : stockData.values()) {
+                results.add(new StockDto(stock));
+            }
+        }
+        return results;
+    }
+
 
     /**
      * converts raw historical stock data in CSV format
@@ -65,14 +72,25 @@ public class Util {
         return null;
     }
 
+    /**
+     * converts stock data from List<HistoricalQuote> List<Entry> format
+     * @param quotes
+     * @return
+     */
     public static List<Entry> historicalStockHistoricalQuoteListtoEntryList(List<HistoricalQuote> quotes) {
         List<Entry> result = new ArrayList<>();
-        for(HistoricalQuote quote : quotes){
-            if(quote.getDate().getTimeInMillis() >0 && quote.getClose()!=null){
-                result.add(new Entry(quote.getDate().getTimeInMillis(), quote.getClose().floatValue()));
+        if(quotes!=null && quotes.size() > 0) {
+            for (HistoricalQuote quote : quotes) {
+                if (quote.getDate().getTimeInMillis() > 0 && quote.getClose() != null) {
+                    result.add(new Entry(quote.getDate().getTimeInMillis(), quote.getClose().floatValue()));
+                }
             }
         }
 
         return result;
     }
+
+
+
+
 }
