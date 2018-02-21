@@ -22,9 +22,19 @@ public class Util {
 
 
 
-    public static String historicalStockQuoteToCSV(List<HistoricalQuote> historicalPriceData) {
-        //TODO implement
-        return null;
+    public static String historicalStockQuoteEntryListToCSVString(List<Entry> historicalPriceData) {
+        StringBuilder stringBuilder = new StringBuilder();
+        if(historicalPriceData!=null){
+            for(Entry entry : historicalPriceData){
+                if(entry!=null) {
+                    stringBuilder.append(String.valueOf((long)entry.getX()))
+                            .append(", ")
+                            .append(entry.getY())
+                            .append("\n");
+                }
+            }
+        }
+        return stringBuilder.toString();
     }
 
 

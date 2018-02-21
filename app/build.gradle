@@ -28,13 +28,17 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
 
+    //Room Dependencies
+    implementation "android.arch.persistence.room:runtime:1.0.0"
+    annotationProcessor "android.arch.persistence.room:compiler:1.0.0"
+
     //YahooFinanceApi
     implementation 'com.yahoofinance-api:YahooFinanceAPI:3.12.3'
 
     //MPAmdroidChart
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
 
-    //SLF4J Logging Depedency Fix
+    //SLF4J Logging Dependency Fix
     implementation 'org.slf4j:slf4j-api:1.7.25'
     implementation 'org.slf4j:slf4j-simple:1.7.25'
 

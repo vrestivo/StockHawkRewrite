@@ -109,6 +109,9 @@ public class UtilTest {
     private String mTestTicker = "IBM";
     private Stock mTestStock;
     private List<Entry> priceEntryList;
+    private List<Entry> priceEntryListFromCSV;
+    private String mStockDataCSV;
+
 
 
     
@@ -137,8 +140,42 @@ public class UtilTest {
         }
     }
 
-    
-    
+
+
+    @Test
+    public void covertStockEntryListToCSVStringTest(){
+        givenAvalidSTockEntryList();
+        whenConvertedToCSVString();
+        dataRemainsValid();
+    }
+
+    private void givenAvalidSTockEntryList() {
+        priceEntryList = Util.historicalStockQuotesCSVtoEntryList(sTestData);
+        Assert.assertNotNull(priceEntryList);
+        Assert.assertTrue(priceEntryList.size() == sTestFloatValues.length );
+    }
+
+    private void whenConvertedToCSVString() {
+        mStockDataCSV = Util.historicalStockQuoteEntryListToCSVString(priceEntryList);
+        Assert.assertNotNull(mStockDataCSV);
+        Assert.assertTrue(mStockDataCSV.length() > 0);
+    }
+
+    private void dataRemainsValid() {
+        priceEntryListFromCSV = Util.historicalStockQuotesCSVtoEntryList(mStockDataCSV);
+        Assert.assertNotNull(priceEntryListFromCSV);
+        Assert.assertTrue("Wront size: exptected/actual: " +  priceEntryListFromCSV.size() + "/" + priceEntryList.size(),
+                priceEntryListFromCSV.size() == priceEntryList.size());
+        int counter = 0;
+        for(Entry entryUnderTest : priceEntryListFromCSV){
+            Assert.assertEquals(priceEntryList.get(counter).getX(), entryUnderTest.getX());
+            Assert.assertEquals(priceEntryList.get(counter).getY(), entryUnderTest.getY());
+            counter++;
+        }
+    }
+
+
+
     @Test
     public void historicalQuoteListToChartEntryListConversion() {
        Stock testStock = givenAValidStockObject();

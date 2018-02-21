@@ -1,5 +1,10 @@
 package com.example.devbox.stockhawkrewrite.model;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
+
 import com.github.mikephil.charting.data.Entry;
 
 import java.io.IOException;
@@ -12,19 +17,33 @@ import yahoofinance.Stock;
  * Stock Data Transfer Object
  */
 
-
+@Entity(tableName = "stocks")
 public class StockDto implements IStockDto {
 
-    private int mId;
-    private String mTicker;
-    private float mBid;
-    private float mAsk;
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "_id")
+    public int mId;
+    @ColumnInfo(name = "ticker")
+    public String mTicker;
+    @ColumnInfo(name = "bid")
+    public float mBid;
+    @ColumnInfo(name = "ask")
+    public float mAsk;
+
+    //TODO convert history to CSV
+    //@ColumnInfo(name = "history")
+    @Ignore
     private List<Entry> mHistory;
-    private String mName;
-    private float mChangeCurrency;
-    private float mChangePercent;
-    private float mYearHigh;
-    private float mYearLow;
+    @ColumnInfo(name = "name")
+    public String mName;
+    @ColumnInfo(name = "change_cur")
+    public float mChangeCurrency;
+    @ColumnInfo(name = "change_per")
+    public float mChangePercent;
+    @ColumnInfo(name = "year_high")
+    public float mYearHigh;
+    @ColumnInfo(name = "year_low")
+    public float mYearLow;
 
     public StockDto(Stock stock) {
         if(stock!=null) {
