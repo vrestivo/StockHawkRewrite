@@ -21,4 +21,7 @@ class ExampleInstrumentedTest {
         val appContext = InstrumentationRegistry.getTargetContext()
         assertEquals("com.example.devbox.stockhawkrewrite", appContext.packageName)
     }
+
+
+
 }

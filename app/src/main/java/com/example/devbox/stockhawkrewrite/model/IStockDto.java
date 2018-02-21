@@ -19,11 +19,11 @@ interface IStockDto {
 
     void setmTicker(String mTicker);
 
-    long getmBid();
+    float getmBid();
 
     void setmBid(long mBid);
 
-    long getmAsk();
+    float getmAsk();
 
     void setmAsk(long mAsk);
 
@@ -35,19 +35,19 @@ interface IStockDto {
 
     void setName(String name);
 
-    long getmChangeCurrency();
+    float getmChangeCurrency();
 
     void setmChangeCurrency(long mChangeCurrency);
 
-    long getmChangePercent();
+    float getmChangePercent();
 
     void setmChangePercent(long mChangePercent);
 
-    long getmYearHigh();
+    float getmYearHigh();
 
     void setmYearHigh(long mYearHigh);
 
-    long getmYearLow();
+    float getmYearLow();
 
     void setmYearLow(long mYearLow);
 }

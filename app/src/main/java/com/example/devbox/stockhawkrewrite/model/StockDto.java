@@ -2,24 +2,61 @@ package com.example.devbox.stockhawkrewrite.model;
 
 import com.github.mikephil.charting.data.Entry;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
+import yahoofinance.Stock;
+
 /**
- * Created by devbox on 2/20/18.
+ * Stock Data Transfer Object
  */
+
 
 public class StockDto implements IStockDto {
 
     private int mId;
     private String mTicker;
-    private long mBid;
-    private long mAsk;
+    private float mBid;
+    private float mAsk;
     private List<Entry> mHistory;
-    private String Name;
-    private long mChangeCurrency;
-    private long mChangePercent;
-    private long mYearHigh;
-    private long mYearLow;
+    private String mName;
+    private float mChangeCurrency;
+    private float mChangePercent;
+    private float mYearHigh;
+    private float mYearLow;
+
+    public StockDto(Stock stock) {
+        if(stock!=null) {
+            this.mTicker = stock.getSymbol();
+            this.mBid = stock.getQuote().getBid().floatValue();
+            this.mAsk = stock.getQuote().getAsk().floatValue();
+            mName = stock.getName();
+            this.mChangeCurrency = stock.getQuote().getChange().floatValue();
+            this.mChangePercent = stock.getQuote().getChangeInPercent().floatValue();
+            this.mYearHigh = stock.getQuote().getYearHigh().floatValue();
+            this.mYearLow = stock.getQuote().getYearLow().floatValue();
+
+            try {
+                this.mHistory = Util.historicalStockHistoricalQuoteListtoEntryList(stock.getHistory());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public StockDto() {
+        this.mId = 0;
+        this.mTicker = "";
+        this.mBid = 0;
+        this.mAsk = 0;
+        this.mHistory = new ArrayList<>();
+        this.mName = "";
+        this.mChangeCurrency = 0;
+        this.mChangePercent = 0;
+        this.mYearHigh = 0;
+        this.mYearLow = 0;
+    }
 
     @Override
     public int getmId() {
@@ -42,7 +79,7 @@ public class StockDto implements IStockDto {
     }
 
     @Override
-    public long getmBid() {
+    public float getmBid() {
         return mBid;
     }
 
@@ -52,7 +89,7 @@ public class StockDto implements IStockDto {
     }
 
     @Override
-    public long getmAsk() {
+    public float getmAsk() {
         return mAsk;
     }
 
@@ -73,16 +110,16 @@ public class StockDto implements IStockDto {
 
     @Override
     public String getName() {
-        return Name;
+        return mName;
     }
 
     @Override
     public void setName(String name) {
-        Name = name;
+        mName = name;
     }
 
     @Override
-    public long getmChangeCurrency() {
+    public float getmChangeCurrency() {
         return mChangeCurrency;
     }
 
@@ -92,7 +129,7 @@ public class StockDto implements IStockDto {
     }
 
     @Override
-    public long getmChangePercent() {
+    public float getmChangePercent() {
         return mChangePercent;
     }
 
@@ -102,7 +139,7 @@ public class StockDto implements IStockDto {
     }
 
     @Override
-    public long getmYearHigh() {
+    public float getmYearHigh() {
         return mYearHigh;
     }
 
@@ -112,7 +149,7 @@ public class StockDto implements IStockDto {
     }
 
     @Override
-    public long getmYearLow() {
+    public float getmYearLow() {
         return mYearLow;
     }
 
