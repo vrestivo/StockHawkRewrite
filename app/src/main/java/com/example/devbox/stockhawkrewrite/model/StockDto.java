@@ -4,6 +4,7 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverters;
 
 import com.github.mikephil.charting.data.Entry;
 
@@ -21,32 +22,30 @@ import yahoofinance.Stock;
 public class StockDto implements IStockDto {
 
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "_id")
-    public int mId;
+    private int mId;
     @ColumnInfo(name = "ticker")
-    public String mTicker;
+    private String mTicker;
     @ColumnInfo(name = "bid")
-    public float mBid;
+    private float mBid;
     @ColumnInfo(name = "ask")
-    public float mAsk;
-
-    //TODO convert history to CSV
-    //@ColumnInfo(name = "history")
-    @Ignore
+    private float mAsk;
+    @TypeConverters(HistoricalStockDataTypeConverter.class)
+    @ColumnInfo(name = "history")
     private List<Entry> mHistory;
     @ColumnInfo(name = "name")
-    public String mName;
+    private String mName;
     @ColumnInfo(name = "change_cur")
-    public float mChangeCurrency;
+    private float mChangeCurrency;
     @ColumnInfo(name = "change_per")
-    public float mChangePercent;
+    private float mChangePercent;
     @ColumnInfo(name = "year_high")
-    public float mYearHigh;
+    private float mYearHigh;
     @ColumnInfo(name = "year_low")
-    public float mYearLow;
+    private float mYearLow;
 
+    @Ignore
     public StockDto(Stock stock) {
-        if(stock!=null) {
+        if (stock != null) {
             this.mTicker = stock.getSymbol();
             this.mBid = stock.getQuote().getBid().floatValue();
             this.mAsk = stock.getQuote().getAsk().floatValue();
@@ -64,6 +63,7 @@ public class StockDto implements IStockDto {
         }
     }
 
+
     public StockDto() {
         this.mId = 0;
         this.mTicker = "";
@@ -77,53 +77,54 @@ public class StockDto implements IStockDto {
         this.mYearLow = 0;
     }
 
+
     @Override
-    public int getmId() {
-        return mId;
+    public int getId() {
+        return this.mId;
     }
 
     @Override
-    public void setmId(int mId) {
+    public void setId(int mId) {
         this.mId = mId;
     }
 
     @Override
-    public String getmTicker() {
+    public String getTicker() {
         return mTicker;
     }
 
     @Override
-    public void setmTicker(String mTicker) {
+    public void setTicker(String mTicker) {
         this.mTicker = mTicker;
     }
 
     @Override
-    public float getmBid() {
+    public float getBid() {
         return mBid;
     }
 
     @Override
-    public void setmBid(long mBid) {
+    public void setBid(float mBid) {
         this.mBid = mBid;
     }
 
     @Override
-    public float getmAsk() {
-        return mAsk;
+    public float getAsk() {
+        return this.mAsk;
     }
 
     @Override
-    public void setmAsk(long mAsk) {
+    public void setAsk(float mAsk) {
         this.mAsk = mAsk;
     }
 
     @Override
-    public List<Entry> getmHistory() {
+    public List<Entry> getHistory() {
         return mHistory;
     }
 
     @Override
-    public void setmHistory(List<Entry> mHistory) {
+    public void setHistory(List<Entry> mHistory) {
         this.mHistory = mHistory;
     }
 
@@ -133,47 +134,47 @@ public class StockDto implements IStockDto {
     }
 
     @Override
-    public void setName(String name) {
-        mName = name;
+    public void setName(String mName) {
+        this.mName = mName;
     }
 
     @Override
-    public float getmChangeCurrency() {
+    public float getChangeCurrency() {
         return mChangeCurrency;
     }
 
     @Override
-    public void setmChangeCurrency(long mChangeCurrency) {
+    public void setChangeCurrency(float mChangeCurrency) {
         this.mChangeCurrency = mChangeCurrency;
     }
 
     @Override
-    public float getmChangePercent() {
+    public float getChangePercent() {
         return mChangePercent;
     }
 
     @Override
-    public void setmChangePercent(long mChangePercent) {
+    public void setChangePercent(float mChangePercent) {
         this.mChangePercent = mChangePercent;
     }
 
     @Override
-    public float getmYearHigh() {
+    public float getYearHigh() {
         return mYearHigh;
     }
 
     @Override
-    public void setmYearHigh(long mYearHigh) {
+    public void setYearHigh(float mYearHigh) {
         this.mYearHigh = mYearHigh;
     }
 
     @Override
-    public float getmYearLow() {
+    public float getYearLow() {
         return mYearLow;
     }
 
     @Override
-    public void setmYearLow(long mYearLow) {
+    public void setYearLow(float mYearLow) {
         this.mYearLow = mYearLow;
     }
 }

@@ -252,16 +252,16 @@ public class UtilTest {
 
     private void returnsValidResults(Map<String, Stock> stockMap, List<StockDto> stockDtoList) {
         for(StockDto stockDto : stockDtoList){
-            Assert.assertTrue(stockMap.containsKey(stockDto.getmTicker()));
-            Stock stock = stockMap.get(stockDto.getmTicker());
-            Assert.assertEquals(stock.getQuote().getAsk().floatValue(), stockDto.getmAsk());
-            Assert.assertEquals(stock.getQuote().getBid().floatValue(), stockDto.getmBid());
-            Assert.assertEquals(stock.getQuote().getChange().floatValue(), stockDto.getmChangeCurrency());
-            Assert.assertEquals(stock.getQuote().getChangeInPercent().floatValue(), stockDto.getmChangePercent());
-            Assert.assertEquals(stock.getQuote().getYearHigh().floatValue(), stockDto.getmYearHigh());
-            Assert.assertEquals(stock.getQuote().getYearLow().floatValue(), stockDto.getmYearLow());
+            Assert.assertTrue(stockMap.containsKey(stockDto.getTicker()));
+            Stock stock = stockMap.get(stockDto.getTicker());
+            Assert.assertEquals(stock.getQuote().getAsk().floatValue(), stockDto.getAsk());
+            Assert.assertEquals(stock.getQuote().getBid().floatValue(), stockDto.getBid());
+            Assert.assertEquals(stock.getQuote().getChange().floatValue(), stockDto.getChangeCurrency());
+            Assert.assertEquals(stock.getQuote().getChangeInPercent().floatValue(), stockDto.getChangePercent());
+            Assert.assertEquals(stock.getQuote().getYearHigh().floatValue(), stockDto.getYearHigh());
+            Assert.assertEquals(stock.getQuote().getYearLow().floatValue(), stockDto.getYearLow());
             Assert.assertEquals(stock.getName(), stockDto.getName());
-            aValidEntryListIsCreated(stock, stockDto.getmHistory());
+            aValidEntryListIsCreated(stock, stockDto.getHistory());
         }
     }
 }

@@ -11,43 +11,43 @@ import java.util.List;
 interface IStockDto {
 
 
-    int getmId();
+    int getId();
 
-    void setmId(int mId);
+    void setId(int mId);
 
-    String getmTicker();
+    String getTicker();
 
-    void setmTicker(String mTicker);
+    void setTicker(String mTicker);
 
-    float getmBid();
+    float getBid();
 
-    void setmBid(long mBid);
+    void setBid(float mBid);
 
-    float getmAsk();
+    float getAsk();
 
-    void setmAsk(long mAsk);
+    void setAsk(float mAsk);
 
-    List<Entry> getmHistory();
+    List<Entry> getHistory();
 
-    void setmHistory(List<Entry> mHistory);
+    void setHistory(List<Entry> mHistory);
 
     String getName();
 
-    void setName(String name);
+    void setName(String mName);
 
-    float getmChangeCurrency();
+    float getChangeCurrency();
 
-    void setmChangeCurrency(long mChangeCurrency);
+    void setChangeCurrency(float mChangeCurrency);
 
-    float getmChangePercent();
+    float getChangePercent();
 
-    void setmChangePercent(long mChangePercent);
+    void setChangePercent(float mChangePercent);
 
-    float getmYearHigh();
+    float getYearHigh();
 
-    void setmYearHigh(long mYearHigh);
+    void setYearHigh(float mYearHigh);
 
-    float getmYearLow();
+    float getYearLow();
 
-    void setmYearLow(long mYearLow);
+    void setYearLow(float mYearLow);
 }

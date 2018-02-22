@@ -40,7 +40,7 @@ public class YFNetDaoTest {
     private void returnsStockDtoList() {
         for(StockDto stockDto : mStockDtoList){
             List<String> tickers = Arrays.asList(mValidStockTickers);
-            tickers.contains(stockDto.getmTicker());
+            tickers.contains(stockDto.getTicker());
         }
     }
 

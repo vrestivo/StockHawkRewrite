@@ -1,7 +1,10 @@
 package com.example.devbox.stockhawkrewrite.model;
 
+import android.arch.persistence.room.TypeConverter;
+
 import com.github.mikephil.charting.data.Entry;
 
+import java.lang.annotation.Annotation;
 import java.util.List;
 
 /**
@@ -10,8 +13,14 @@ import java.util.List;
 
 public class HistoricalStockDataTypeConverter {
 
+    @TypeConverter
     public static String convertEntryValuesToCSVString(List<Entry> entryList){
         return Util.historicalStockQuoteEntryListToCSVString(entryList);
+    }
+
+    @TypeConverter
+    public static List<Entry> convertCSVStringToEntryList(String csvData){
+        return Util.historicalStockQuotesCSVtoEntryList(csvData);
     }
 
 }

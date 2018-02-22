@@ -20,7 +20,7 @@ import java.util.List;
 
 
 /**
- * Created by devbox on
+ * This class performs Room database test
  */
 
 @RunWith(AndroidJUnit4.class)
@@ -78,18 +78,19 @@ public class RoomDbStockDaoTest {
         List<Entry> historyUnderTest;
         for(StockDto exptected: downloadedStockData){
 
-            Assert.assertEquals("wrong ticker", exptected.getmTicker(), databaseStockData.get(couter).getmTicker());
-            Assert.assertEquals("wrong ask price", exptected.getmAsk(), databaseStockData.get(couter).getmAsk());
-            Assert.assertEquals("wrong big price", exptected.getmBid(), databaseStockData.get(couter).getmBid());
-            Assert.assertEquals("wrong change currency", exptected.getmChangeCurrency(), databaseStockData.get(couter).getmChangeCurrency());
-            Assert.assertEquals("wrong percent change", exptected.getmChangePercent(), databaseStockData.get(couter).getmChangePercent());
-            Assert.assertEquals("wrong year high", exptected.getmYearHigh(), databaseStockData.get(couter).getmYearHigh());
-            Assert.assertEquals("year low", exptected.getmYearLow(), databaseStockData.get(couter).getmYearLow());
-            Assert.assertEquals("history size mismatch", exptected.getmHistory().size(), databaseStockData.get(couter).getmHistory().size());
-            exptectedHistory = exptected.getmHistory();
-            historyUnderTest = databaseStockData.get(couter).getmHistory();
+            Assert.assertEquals("wrong ticker", exptected.getTicker(), databaseStockData.get(couter).getTicker());
+            Assert.assertEquals("wrong ask price", exptected.getAsk(), databaseStockData.get(couter).getAsk());
+            Assert.assertEquals("wrong big price", exptected.getBid(), databaseStockData.get(couter).getBid());
+            Assert.assertEquals("wrong change currency", exptected.getChangeCurrency(), databaseStockData.get(couter).getChangeCurrency());
+            Assert.assertEquals("wrong percent change", exptected.getChangePercent(), databaseStockData.get(couter).getChangePercent());
+            Assert.assertEquals("wrong year high", exptected.getYearHigh(), databaseStockData.get(couter).getYearHigh());
+            Assert.assertEquals("year low", exptected.getYearLow(), databaseStockData.get(couter).getYearLow());
+            Assert.assertEquals("history size mismatch", exptected.getHistory().size(), databaseStockData.get(couter).getHistory().size());
+            exptectedHistory = exptected.getHistory();
+            historyUnderTest = databaseStockData.get(couter).getHistory();
             Assert.assertNotNull("expected history is null", exptectedHistory);
             Assert.assertNotNull("history under test is null", historyUnderTest);
+            
             for(Entry entryUnderTest: historyUnderTest){
                 Assert.assertEquals("", entryUnderTest.getX(), exptectedHistory.get(historyCounter).getX());
                 Assert.assertEquals("", entryUnderTest.getY(), exptectedHistory.get(historyCounter).getY());
