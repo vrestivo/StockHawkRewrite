@@ -31,6 +31,9 @@ public class RoomDbStockDaoTest {
     private List<StockDto> downloadedStockData;
     private List<StockDto> databaseStockData;
     private String[] validStocks = {"TSLA", "IBM", "BA"};
+    private String stockToDelete = "TSLA";
+    private String stockToSearch = "IBM";
+    private String invalidStockTicker = "ZZZZZZ";
 
     @Before
     public void setupInMemoryDb() {
@@ -38,6 +41,9 @@ public class RoomDbStockDaoTest {
                 InstrumentationRegistry.getContext(),
                 StockRoomDb.class
         ).build();
+
+        downloadedStockData = null;
+        databaseStockData = null;
     }
 
     @After
@@ -50,7 +56,7 @@ public class RoomDbStockDaoTest {
     @Test
     public void databaseStorageAndRetrievalTest() {
         givenDownloadedStockData();
-        whenStockDataIsSavedAndRrieved();
+        whenStockDataIsSaved();
         theDataIntegrityIsPreserved();
 
     }
@@ -62,7 +68,7 @@ public class RoomDbStockDaoTest {
         Assert.assertTrue(downloadedStockData.size()>0);
     }
 
-    private void whenStockDataIsSavedAndRrieved() {
+    private void whenStockDataIsSaved() {
         for(StockDto stockDto : downloadedStockData) {
             stockRoomDb.stockDao().insertStocks(stockDto);
         }
@@ -90,7 +96,7 @@ public class RoomDbStockDaoTest {
             historyUnderTest = databaseStockData.get(couter).getHistory();
             Assert.assertNotNull("expected history is null", exptectedHistory);
             Assert.assertNotNull("history under test is null", historyUnderTest);
-            
+
             for(Entry entryUnderTest: historyUnderTest){
                 Assert.assertEquals("", entryUnderTest.getX(), exptectedHistory.get(historyCounter).getX());
                 Assert.assertEquals("", entryUnderTest.getY(), exptectedHistory.get(historyCounter).getY());
@@ -102,5 +108,42 @@ public class RoomDbStockDaoTest {
         }
     }
 
+
+    @Test
+    public void deleteSingleStockTest(){
+        givenDownloadedStockData();
+        whenStockDataIsSaved();
+        selectStockCanBeDeleted();
+    }
+
+    private void selectStockCanBeDeleted() {
+        int deletedStocks = stockRoomDb.stockDao().deleteASingleStock(stockToDelete);
+        System.out.println("_in deleteSingleStockTest() deleted stock items: " +  deletedStocks);
+        Assert.assertEquals(1,deletedStocks);
+        databaseStockData = stockRoomDb.stockDao().getAllStocks();
+        Assert.assertTrue(databaseStockData.size() == 2);
+        System.out.println("_in deleteSingleStockTest() stock items: " +  databaseStockData.size());
+        for(StockDto stockDto : databaseStockData){
+            System.out.println("_in deleteSingleStockTest() remaining tickers: " + stockDto.getTicker());
+        }
+    }
+
+    @Test
+    public void searchForASingleStockTest() {
+        givenDownloadedStockData();
+        whenStockDataIsSaved();
+        searchForASingleValidStockReturnsAValidResult();
+        searchForAnInvalidStockReturnsNull();
+    }
+
+    private void searchForASingleValidStockReturnsAValidResult() {
+        StockDto stockDto = stockRoomDb.stockDao().searchForASingleStock(stockToSearch);
+        Assert.assertEquals(stockToSearch, stockDto.getTicker());
+    }
+
+    private void searchForAnInvalidStockReturnsNull() {
+        StockDto stockDto = stockRoomDb.stockDao().searchForASingleStock(invalidStockTicker);
+        Assert.assertNull(stockDto);
+    }
 
 }
