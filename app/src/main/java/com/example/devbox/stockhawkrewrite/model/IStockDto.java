@@ -1,5 +1,7 @@
 package com.example.devbox.stockhawkrewrite.model;
 
+import android.os.Parcelable;
+
 import com.github.mikephil.charting.data.Entry;
 
 import java.util.List;
@@ -8,7 +10,7 @@ import java.util.List;
  * Interface for stock data transfer object
  */
 
-interface IStockDto {
+interface IStockDto extends Parcelable {
 
 
     int getId();

@@ -57,7 +57,7 @@ public class RoomDbStockDaoTest {
     public void databaseStorageAndRetrievalTest() {
         givenDownloadedStockData();
         whenStockDataIsSaved();
-        theDataIntegrityIsPreserved();
+        dataIntegrityIsPreserved();
 
     }
 
@@ -75,7 +75,7 @@ public class RoomDbStockDaoTest {
 
     }
 
-    private void theDataIntegrityIsPreserved() {
+    private void dataIntegrityIsPreserved() {
         databaseStockData = stockRoomDb.stockDao().getAllStocks();
         Assert.assertEquals(downloadedStockData.size(), databaseStockData.size());
         int couter = 0;
@@ -109,6 +109,7 @@ public class RoomDbStockDaoTest {
     }
 
 
+    //TODO add edge cases tests
     @Test
     public void deleteSingleStockTest(){
         givenDownloadedStockData();
@@ -127,6 +128,7 @@ public class RoomDbStockDaoTest {
             System.out.println("_in deleteSingleStockTest() remaining tickers: " + stockDto.getTicker());
         }
     }
+
 
     @Test
     public void searchForASingleStockTest() {

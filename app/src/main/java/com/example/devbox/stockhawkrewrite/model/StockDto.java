@@ -5,6 +5,8 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.github.mikephil.charting.data.Entry;
 
@@ -19,7 +21,7 @@ import yahoofinance.Stock;
  */
 
 @Entity(tableName = "stocks")
-public class StockDto implements IStockDto {
+public class StockDto implements IStockDto, Parcelable {
 
     @PrimaryKey(autoGenerate = true)
     private int mId;
@@ -77,6 +79,51 @@ public class StockDto implements IStockDto {
         this.mYearLow = 0;
     }
 
+
+    //Parcelable Implementation
+    private StockDto(Parcel source){
+        //todoRead data from source
+        setId(source.readInt());
+        setTicker(source.readString());
+        setBid(source.readFloat());
+        setAsk(source.readFloat());
+        setHistory(Util.historicalStockQuotesCSVtoEntryList(source.readString()));
+        setName(source.readString());
+        setChangeCurrency(source.readFloat());
+        setChangePercent(source.readFloat());
+        setYearHigh(source.readFloat());
+        setYearLow(source.readFloat());
+
+    }
+
+    public static final Parcelable.Creator<StockDto> CREATOR = new Parcelable.Creator<StockDto>(){
+        @Override
+        public StockDto createFromParcel(Parcel source) {
+            return new StockDto(source);
+        }
+
+        @Override
+        public StockDto[] newArray(int size) {
+            return new StockDto[0];
+        }
+    };
+
+    public int describeContents() {
+        return 0;
+    }
+
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(mId);
+        dest.writeString(mTicker);
+        dest.writeFloat(mBid);
+        dest.writeFloat(mAsk);
+        dest.writeString(Util.historicalStockQuoteEntryListToCSVString(mHistory));
+        dest.writeString(mName);
+        dest.writeFloat(mChangeCurrency);
+        dest.writeFloat(mChangePercent);
+        dest.writeFloat(mYearHigh);
+        dest.writeFloat(mYearLow);
+    }
 
     @Override
     public int getId() {
