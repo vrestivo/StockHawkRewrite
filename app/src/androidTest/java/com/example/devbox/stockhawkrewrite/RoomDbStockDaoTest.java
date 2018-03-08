@@ -18,7 +18,6 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
-
 /**
  * This class performs Room database test
  */
@@ -33,7 +32,9 @@ public class RoomDbStockDaoTest {
     private String[] validStocks = {"TSLA", "IBM", "BA"};
     private String stockToDelete = "TSLA";
     private String stockToSearch = "IBM";
+    private String newStockTicker = "LMT";
     private String invalidStockTicker = "ZZZZZZ";
+    private boolean mStocksDownloaded = false;
 
     @Before
     public void setupInMemoryDb() {
@@ -48,6 +49,7 @@ public class RoomDbStockDaoTest {
 
     @After
     public void tearDownInMemoryDb() {
+        //clean up database
         if (stockRoomDb != null && stockRoomDb.isOpen()) {
             stockRoomDb.close();
         }
@@ -62,10 +64,13 @@ public class RoomDbStockDaoTest {
     }
 
     private void givenDownloadedStockData() {
-        yahooFinanceNetDao = new YFNetDao();
-        downloadedStockData = yahooFinanceNetDao.fetchStocks(validStocks);
+        if(!mStocksDownloaded) {
+            yahooFinanceNetDao = new YFNetDao();
+            downloadedStockData = yahooFinanceNetDao.fetchStocks(validStocks);
+        }
         Assert.assertNotNull("_in: databaseStorageAndRetrievalTest Failed To download stock data.", downloadedStockData);
         Assert.assertTrue(downloadedStockData.size()>0);
+        mStocksDownloaded = true;
     }
 
     private void whenStockDataIsSaved() {
@@ -147,5 +152,4 @@ public class RoomDbStockDaoTest {
         StockDto stockDto = stockRoomDb.stockDao().searchForASingleStock(invalidStockTicker);
         Assert.assertNull(stockDto);
     }
-
 }

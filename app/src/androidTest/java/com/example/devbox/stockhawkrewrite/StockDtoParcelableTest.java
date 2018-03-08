@@ -7,9 +7,6 @@ import com.example.devbox.stockhawkrewrite.model.StockDto;
 import com.github.mikephil.charting.data.Entry;
 
 import junit.framework.Assert;
-
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
