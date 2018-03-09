@@ -14,22 +14,15 @@ import yahoofinance.YahooFinance;
 
 public class YFNetDao implements IYFNetDao {
 
-
     @Override
-    public List<StockDto> fetchStocks(String[] tickers) {
+    public List<StockDto> fetchStocks(String[] tickers) throws IOException {
         List<StockDto> result = new ArrayList<>();
-        if(tickers!=null) {
-            try {
-                Map<String, Stock> stockData = YahooFinance.get(tickers);
-                result = Util.convertStockMapToStockDtoList(stockData);
-            } catch (IOException e) {
-                e.printStackTrace();
-                //TODO pass the error to UI Layer
-            }
+        if (tickers != null) {
+            Map<String, Stock> stockData = YahooFinance.get(tickers);
+            result = Util.convertStockMapToStockDtoList(stockData);
         }
         return result;
     }
-
 
 }
 

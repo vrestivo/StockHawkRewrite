@@ -16,6 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -66,7 +67,11 @@ public class RoomDbStockDaoTest {
     private void givenDownloadedStockData() {
         if(!mStocksDownloaded) {
             yahooFinanceNetDao = new YFNetDao();
-            downloadedStockData = yahooFinanceNetDao.fetchStocks(validStocks);
+            try {
+                downloadedStockData = yahooFinanceNetDao.fetchStocks(validStocks);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         Assert.assertNotNull("_in: databaseStorageAndRetrievalTest Failed To download stock data.", downloadedStockData);
         Assert.assertTrue(downloadedStockData.size()>0);

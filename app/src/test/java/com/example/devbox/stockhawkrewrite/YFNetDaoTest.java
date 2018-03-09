@@ -5,6 +5,8 @@ import com.example.devbox.stockhawkrewrite.model.StockDto;
 import com.example.devbox.stockhawkrewrite.model.YFNetDao;
 import junit.framework.Assert;
 import org.junit.Test;
+
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,7 +35,11 @@ public class YFNetDaoTest {
     }
 
     private void whenFetchingValidStocks() {
-        mStockDtoList = mYFNetDao.fetchStocks(mValidStockTickers);
+        try {
+            mStockDtoList = mYFNetDao.fetchStocks(mValidStockTickers);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         Assert.assertNotNull(mStockDtoList);
     }
 
@@ -44,5 +50,7 @@ public class YFNetDaoTest {
         }
     }
 
+
+    //TODO test reactively
 
 }

@@ -1,7 +1,5 @@
 package com.example.devbox.stockhawkrewrite;
 
-import android.os.SystemClock;
-
 import com.example.devbox.stockhawkrewrite.model.StockDto;
 import com.example.devbox.stockhawkrewrite.model.YFNetDao;
 
@@ -12,10 +10,10 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -27,14 +25,11 @@ public class RxJavaTest {
     private YFNetDao yfNetDao;
     private List<StockDto> stocks;
     Observable<List<StockDto>> yahooObservable;
-    private Disposable disposable;
 
 
     @After
     public void cleanup(){
-        if(disposable!=null && !disposable.isDisposed()){
-            disposable.dispose();
-        }
+
     }
 
 
@@ -43,7 +38,6 @@ public class RxJavaTest {
     public void rxJavaStockFetchingTest(){
         givenInitializedYFNetDaoAndObservable();
         whenFetchingStocksAsynchronously();
-        SystemClock.sleep(50000);
         validResultsAreAvailableOnTheMainThread();
     }
 
@@ -55,23 +49,24 @@ public class RxJavaTest {
 
 
     public void whenFetchingStocksAsynchronously(){
-        disposable = yahooObservable
+        yahooObservable
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(stockDtoList -> {
+                .timeout(7000, TimeUnit.MILLISECONDS)
+                .blockingSubscribe(stockDtoList -> {
                     System.out.println("_in emitter");
                     Assert.assertNotNull(stockDtoList);
                     Assert.assertEquals("wrong stock list size", validStocks.length, stockDtoList.size());
                     stocks = stockDtoList;
-                    }, e -> {e.printStackTrace(); Assert.fail();
+                }, e -> {e.printStackTrace(); Assert.fail();
                 });
     }
 
+
     public void validResultsAreAvailableOnTheMainThread(){
-        int counter = 0;
-        List<String> tickerValiationList = Arrays.asList(validStocks);
+        List<String> tickerValidationList = Arrays.asList(validStocks);
         for(StockDto stockDto : stocks){
-            Assert.assertTrue("Invalid Stock Ticker", tickerValiationList.contains(stockDto.getTicker()));
+            Assert.assertTrue("Invalid Stock Ticker", tickerValidationList.contains(stockDto.getTicker()));
         }
     }
 

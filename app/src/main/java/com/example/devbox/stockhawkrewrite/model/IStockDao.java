@@ -21,7 +21,6 @@ public interface IStockDao {
     @Query("SELECT * FROM stocks;")
     List<StockDto> getAllStocks();
 
-
     @Query("SELECT * FROM stocks WHERE ticker == :ticker")
     StockDto searchForASingleStock(String ticker);
 
