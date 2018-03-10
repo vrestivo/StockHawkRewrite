@@ -29,13 +29,14 @@ public class RxJavaTest {
 
     @After
     public void cleanup(){
+        //TODO implement
 
     }
 
 
 
     @Test
-    public void rxJavaStockFetchingTest(){
+    public void fetchingStocksReactivelyTest(){
         givenInitializedYFNetDaoAndObservable();
         whenFetchingStocksAsynchronously();
         validResultsAreAvailableOnTheMainThread();
@@ -69,6 +70,5 @@ public class RxJavaTest {
             Assert.assertTrue("Invalid Stock Ticker", tickerValidationList.contains(stockDto.getTicker()));
         }
     }
-
 
 }
