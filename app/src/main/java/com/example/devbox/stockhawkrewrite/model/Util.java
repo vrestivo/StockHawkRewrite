@@ -101,6 +101,19 @@ public class Util {
     }
 
 
+    /**
+     * provides deep copy of the arraylist
+     * @param sourceStockList
+     * @param destinationStockList
+     */
+    public static void copyStockDtoList(List<StockDto> sourceStockList, List<StockDto> destinationStockList){
+        if(sourceStockList!=null && destinationStockList!=null) {
+            destinationStockList.clear();
+            for (StockDto stockDto : sourceStockList) {
+                destinationStockList.add(stockDto);
+            }
+        }
+    }
 
 
 }
