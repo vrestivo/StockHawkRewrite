@@ -17,7 +17,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Observable;
+
+import yahoofinance.quotes.stock.StockStats;
 
 /**
  * This class performs Room database test
@@ -156,5 +161,36 @@ public class RoomDbStockDaoTest {
     private void searchForAnInvalidStockReturnsNull() {
         StockDto stockDto = stockRoomDb.stockDao().searchForASingleStock(invalidStockTicker);
         Assert.assertNull(stockDto);
+    }
+
+
+    @Test
+    public void getAllStockTickersTest(){
+
+        giveInitializedDatabasAndInsrtedTestStocksDtos();
+        String[] returnedTickers = whenQueriedForallStockTickers();
+        Assert.assertNotNull("returned ticker string array is null",returnedTickers);
+        returnsAStringArrayWithValidStockTickers(returnedTickers);
+    }
+
+    private void giveInitializedDatabasAndInsrtedTestStocksDtos(){
+        for(String ticker : validStocks){
+            StockDto stockDto = new StockDto();
+            stockDto.setTicker(ticker);
+            stockRoomDb.stockDao().insertStocks(stockDto);
+        }
+    }
+
+    private String[] whenQueriedForallStockTickers(){
+        return stockRoomDb.stockDao().getAllStockTickers();
+    }
+
+    private void returnsAStringArrayWithValidStockTickers(String[] tickersToTest) {
+        Assert.assertEquals("invalid returned array size", validStocks.length, tickersToTest.length);
+
+        List<String> validList = Arrays.asList(validStocks);
+        for(String ticker: validStocks){
+            Assert.assertTrue("list does not contain " + ticker, validList.contains(ticker));
+        }
     }
 }

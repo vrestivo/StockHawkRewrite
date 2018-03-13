@@ -33,4 +33,7 @@ public interface IStockDao {
     @Query("DELETE FROM stocks WHERE ticker == :ticker")
     int deleteASingleStock(String ticker);
 
+    @Query("SELECT ticker FROM stocks;")
+    String[] getAllStockTickers();
+
 }

@@ -25,6 +25,7 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import yahoofinance.Stock;
 
 
 /**
@@ -44,6 +45,7 @@ public class RxJavaRoomDbTest {
     private List<StockDto> downloadedStockData;
     private List<StockDto> databaseStockData;
     private Flowable<List<StockDto>> databaseStockFlowableData;
+    private StockDto stockToTestAgainst;
     private boolean checkedResult;
     private Disposable disposable;
 
@@ -224,16 +226,6 @@ public class RxJavaRoomDbTest {
                 );
     }
 
-    public void searchForStockReactively(String tickerToSearch){
-        Observable.just(tickerToSearch)
-                .timeout(2000, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .blockingSubscribe(
-                        emitter -> {stockToTestAgainst = stockRoomDb.stockDao().searchForASingleStock(emitter);},
-                        throwable -> {throwable.printStackTrace(); Assert.fail("cant find " + tickerToSearch);}
-                );
-    }
 
     public void deleteReactively(String tickerToDelete){
         Observable.just(tickerToDelete)

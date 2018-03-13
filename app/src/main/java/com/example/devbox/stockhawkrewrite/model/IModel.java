@@ -1,6 +1,6 @@
 package com.example.devbox.stockhawkrewrite.model;
 
-import com.example.devbox.stockhawkrewrite.presenter.IStockPresenter;
+import com.example.devbox.stockhawkrewrite.presenter.IStockListPresenter;
 
 import java.util.List;
 
@@ -24,8 +24,12 @@ interface IModel {
 
     void refreshStockData();
 
-    void bindPresenter(IStockPresenter presenter);
+    void bindPresenter(IStockListPresenter presenter);
 
     void unbindPresenter();
+
+    IModel getInstance();
+
+    String[] getAllStockTickers();
 
 }
