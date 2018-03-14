@@ -1,5 +1,6 @@
 package com.example.devbox.stockhawkrewrite.model;
-import java.io.IOException;
+import com.example.devbox.stockhawkrewrite.exceptions.StockHawkException;
+
 import java.util.List;
 
 /**
@@ -7,5 +8,6 @@ import java.util.List;
  */
 
 public interface IYFNetDao {
-    List<StockDto> fetchStocks(String[] tickers) throws IOException;
+    List<StockDto> fetchStocks(String[] tickers) throws StockHawkException;
+    StockDto fetchASingleStock(String ticker) throws StockHawkException;
 }

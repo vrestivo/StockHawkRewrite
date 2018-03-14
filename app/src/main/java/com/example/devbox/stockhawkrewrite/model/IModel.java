@@ -1,5 +1,8 @@
 package com.example.devbox.stockhawkrewrite.model;
 
+import android.content.Context;
+import android.support.annotation.VisibleForTesting;
+
 import com.example.devbox.stockhawkrewrite.presenter.IStockListPresenter;
 
 import java.util.List;
@@ -10,7 +13,7 @@ import io.reactivex.Flowable;
  * Created by devbox on 3/9/18.
  */
 
-interface IModel {
+public interface IModel {
 
     void fetchStocksAndStoreInDatabase();
 
@@ -18,7 +21,7 @@ interface IModel {
 
     void clearStockDatabase();
 
-    void addASingleStock(String stockToAdd); //TODO add throws clause
+    void fetchASingleStockAndStoreInDatabase(String stockToAdd); //TODO add throws clause
 
     void deleteASingleStock(String ticker);
 
@@ -28,8 +31,11 @@ interface IModel {
 
     void unbindPresenter();
 
-    IModel getInstance();
+    StockDto getStockFromDbByTicker(String tickerToGet);
 
     String[] getAllStockTickers();
+
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    StockRoomDb getsStockRoomDb();
 
 }

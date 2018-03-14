@@ -4,7 +4,6 @@ import android.arch.persistence.room.TypeConverter;
 
 import com.github.mikephil.charting.data.Entry;
 
-import java.lang.annotation.Annotation;
 import java.util.List;
 
 /**
