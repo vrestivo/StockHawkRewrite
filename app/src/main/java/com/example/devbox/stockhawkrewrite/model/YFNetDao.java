@@ -6,7 +6,6 @@ import com.example.devbox.stockhawkrewrite.exceptions.UnableToDownloadDataExcept
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +32,7 @@ public class YFNetDao implements IYFNetDao {
             stockData = YahooFinance.get(tickers);
         } catch (FileNotFoundException fnf) {
             fnf.printStackTrace();
-            throw new InvalidStockException("Invalid Stock detected");
+            throw new InvalidStockException("Invalid Stock List");
         } catch (IOException e) {
             e.printStackTrace();
             throw new UnableToDownloadDataException("Unable to download stock data");

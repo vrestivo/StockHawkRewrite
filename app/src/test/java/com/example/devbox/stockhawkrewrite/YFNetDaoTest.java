@@ -7,8 +7,11 @@ import com.example.devbox.stockhawkrewrite.model.IYFNetDao;
 import com.example.devbox.stockhawkrewrite.model.StockDto;
 import com.example.devbox.stockhawkrewrite.model.YFNetDao;
 import junit.framework.Assert;
+
+import org.junit.After;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,9 +25,16 @@ public class YFNetDaoTest {
     private IYFNetDao mYFNetDao;
     private String[] mValidStockTickers = {"TSLA", "IBM", "BA"};
     private String[] mValidnAndInvaliStockTickers = {"TSLA", "ZZZZzzZZ", "IBM", "AAAAAAAAA", "BA"};
+    private String[] mInvalidStockTickers = {"AAAAzzz", "ZZZaaaaAA", "AABBBYYYY", "AAAYYYYBBB"};
     private String mInvalidStockTicker = "ZZZZZZZzz";
     private List<StockDto> mStockDtoList;
 
+
+    @After
+    public void cleanup(){
+        mStockDtoList = null;
+        mYFNetDao = null;
+    }
 
     @Test
     public void yFNetDaoDownloadValidSTocksTest() {
@@ -59,8 +69,41 @@ public class YFNetDaoTest {
 
     private void whenFetchingAnInvalidStockThrowsInvalidStockException() {
        StockDto stock = mYFNetDao.fetchASingleStock(mInvalidStockTicker);
+       Assert.assertNull(stock);
     }
-    
+
+
+    @Test
+    public void yFNetDaoDownloadStocksWithAnInvalidStockTicker(){
+        givenInitializedYFNetDao();
+        whenFetchingValidAndInvalidStocksExceptionIsNotThrown();
+        validStocksAreReturned();
+    }
+
+    private void whenFetchingValidAndInvalidStocksExceptionIsNotThrown() {
+       mStockDtoList = mYFNetDao.fetchStocks(mValidnAndInvaliStockTickers);
+    }
+
+    private void validStocksAreReturned() {
+        Assert.assertNotNull(mStockDtoList);
+        List<String> stockValidTickerList = Arrays.asList(mValidStockTickers);
+        for(StockDto stock : mStockDtoList){
+            Assert.assertTrue("results do not contain given ticker",
+                    stockValidTickerList.contains(stock.getTicker()));
+        }
+    }
+
+    @Test(expected = InvalidStockException.class)
+    public void yFNetDaoDownloadInvalidStockListTest(){
+        givenInitializedYFNetDao();
+        whenDownloadingInvalidStockListExceptionIsThrown();
+    }
+
+    private void whenDownloadingInvalidStockListExceptionIsThrown() {
+        mStockDtoList = mYFNetDao.fetchStocks(mInvalidStockTickers);
+        Assert.assertNull(mStockDtoList);
+    }
+
 
     //Uncomment to test without network connection
     /*
