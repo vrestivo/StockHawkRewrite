@@ -2,6 +2,7 @@ package com.example.devbox.stockhawkrewrite;
 
 import android.support.test.runner.AndroidJUnit4;
 
+import com.example.devbox.stockhawkrewrite.exceptions.InvalidStockException;
 import com.example.devbox.stockhawkrewrite.model.IModel;
 import com.example.devbox.stockhawkrewrite.model.Model;
 import com.example.devbox.stockhawkrewrite.model.StockDto;
@@ -79,7 +80,7 @@ public class ModelTest {
         Assert.assertEquals("retrieved ticked does not match", mTestTicker, retrievedStock.getTicker());
     }
 
-    @Test
+    @Test(expected = InvalidStockException.class)
     public void addInvalidStockTest(){
         givenInitializedModel();
         whenAnInvalideStockIsfetchedExceptionIsThrown();

@@ -12,17 +12,14 @@ import com.github.mikephil.charting.data.Entry;
 import junit.framework.Assert;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Observable;
-
-import yahoofinance.quotes.stock.StockStats;
 
 /**
  * This class performs Room database test
@@ -31,63 +28,68 @@ import yahoofinance.quotes.stock.StockStats;
 @RunWith(AndroidJUnit4.class)
 public class RoomDbStockDaoTest {
 
-    private StockRoomDb stockRoomDb;
-    private YFNetDao yahooFinanceNetDao;
-    private List<StockDto> downloadedStockData;
+    private static StockRoomDb stockRoomDb;
+    private static YFNetDao yahooFinanceNetDao;
+    private static List<StockDto> downloadedStockData;
+    private static String newStockTicker = "LMT";
+    private static StockDto newStockDto;
+    private static String[] validStocks = {"TSLA", "IBM", "BA"};
     private List<StockDto> databaseStockData;
-    private String[] validStocks = {"TSLA", "IBM", "BA"};
     private String stockToDelete = "TSLA";
     private String stockToSearch = "IBM";
-    private String newStockTicker = "LMT";
     private String invalidStockTicker = "ZZZZZZ";
-    private boolean mStocksDownloaded = false;
+    private String mClearDatabaseQuery = "DELETE FROM stocks;";
+
+    @BeforeClass
+    public static void testClassSetup(){
+        yahooFinanceNetDao = new YFNetDao();
+        downloadedStockData = yahooFinanceNetDao.fetchStocks(validStocks);
+        newStockDto = yahooFinanceNetDao.fetchASingleStock(newStockTicker);
+        stockRoomDb = Room.inMemoryDatabaseBuilder(
+                InstrumentationRegistry.getContext(),
+                StockRoomDb.class)
+                .allowMainThreadQueries()
+                .build();
+    }
 
     @Before
     public void setupInMemoryDb() {
-        stockRoomDb = Room.inMemoryDatabaseBuilder(
-                InstrumentationRegistry.getContext(),
-                StockRoomDb.class
-        ).build();
-
-        downloadedStockData = null;
         databaseStockData = null;
     }
 
     @After
-    public void tearDownInMemoryDb() {
+    public void cleanup(){
+        stockRoomDb.compileStatement(mClearDatabaseQuery).execute();
+    }
+
+    @AfterClass
+    public static void tearDownInMemoryDb() {
         //clean up database
         if (stockRoomDb != null && stockRoomDb.isOpen()) {
             stockRoomDb.close();
         }
     }
 
+
+
     @Test
     public void databaseStorageAndRetrievalTest() {
         givenDownloadedStockData();
-        whenStockDataIsSaved();
+        whenDownloadedStockDataIsSaved();
         dataIntegrityIsPreserved();
-
     }
 
     private void givenDownloadedStockData() {
-        if(!mStocksDownloaded) {
-            yahooFinanceNetDao = new YFNetDao();
-            try {
-                downloadedStockData = yahooFinanceNetDao.fetchStocks(validStocks);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
         Assert.assertNotNull("_in: databaseStorageAndRetrievalTest Failed To download stock data.", downloadedStockData);
+        Assert.assertNotNull("newStockDto is null", newStockDto);
         Assert.assertTrue(downloadedStockData.size()>0);
-        mStocksDownloaded = true;
+        Assert.assertEquals("new stock ticker does not match", newStockTicker, newStockDto.getTicker());
     }
 
-    private void whenStockDataIsSaved() {
+    private void whenDownloadedStockDataIsSaved() {
         for(StockDto stockDto : downloadedStockData) {
             stockRoomDb.stockDao().insertStocks(stockDto);
         }
-
     }
 
     private void dataIntegrityIsPreserved() {
@@ -124,11 +126,36 @@ public class RoomDbStockDaoTest {
     }
 
 
+    @Test
+    public void deleteAllTest(){
+        givenDownloadedStockData();
+        givenADataBasePopulatedWithStockData();
+        whenDeletingAllItems();
+        dataBaseIsEmpty();
+    }
+
+    private void givenADataBasePopulatedWithStockData(){
+        Assert.assertNotNull("", downloadedStockData);
+        Assert.assertTrue("",downloadedStockData.size() > 0);
+        for(StockDto stock : downloadedStockData) {
+            stockRoomDb.stockDao().insertStocks(stock);
+        }
+        Assert.assertTrue("",stockRoomDb.stockDao().getAllStocks().size() > 0);
+    }
+
+    private void whenDeletingAllItems() {
+        stockRoomDb.stockDao().deleteAllStocks();
+    }
+
+    private void dataBaseIsEmpty(){
+        Assert.assertTrue("",stockRoomDb.stockDao().getAllStocks().size() == 0);
+    }
+
     //TODO add edge cases tests
     @Test
     public void deleteSingleStockTest(){
         givenDownloadedStockData();
-        whenStockDataIsSaved();
+        whenDownloadedStockDataIsSaved();
         selectStockCanBeDeleted();
     }
 
@@ -148,13 +175,13 @@ public class RoomDbStockDaoTest {
     @Test
     public void searchForASingleStockTest() {
         givenDownloadedStockData();
-        whenStockDataIsSaved();
-        searchForASingleValidStockReturnsAValidResult();
+        whenDownloadedStockDataIsSaved();
+        searchForASingleValidStockReturnsAValidResult(stockToSearch);
         searchForAnInvalidStockReturnsNull();
     }
 
-    private void searchForASingleValidStockReturnsAValidResult() {
-        StockDto stockDto = stockRoomDb.stockDao().searchForASingleStock(stockToSearch);
+    private void searchForASingleValidStockReturnsAValidResult(String tickerToSearch) {
+        StockDto stockDto = stockRoomDb.stockDao().searchForASingleStock(tickerToSearch);
         Assert.assertEquals(stockToSearch, stockDto.getTicker());
     }
 
@@ -163,31 +190,26 @@ public class RoomDbStockDaoTest {
         Assert.assertNull(stockDto);
     }
 
+    
 
     @Test
     public void getAllStockTickersTest(){
-
-        giveInitializedDatabasAndInsrtedTestStocksDtos();
-        String[] returnedTickers = whenQueriedForallStockTickers();
-        Assert.assertNotNull("returned ticker string array is null",returnedTickers);
-        returnsAStringArrayWithValidStockTickers(returnedTickers);
+        givenInitializedDatabaseWithDownloadedStockData();
+        String[] queryResults = whenQueriedForAllStockTickers();
+        returnsAStringArrayWithValidStockTickers(queryResults);
     }
 
-    private void giveInitializedDatabasAndInsrtedTestStocksDtos(){
-        for(String ticker : validStocks){
-            StockDto stockDto = new StockDto();
-            stockDto.setTicker(ticker);
-            stockRoomDb.stockDao().insertStocks(stockDto);
-        }
+    private void givenInitializedDatabaseWithDownloadedStockData() {
+        givenDownloadedStockData();
+        whenDownloadedStockDataIsSaved();
     }
 
-    private String[] whenQueriedForallStockTickers(){
+    private String[] whenQueriedForAllStockTickers(){
         return stockRoomDb.stockDao().getAllStockTickers();
     }
 
     private void returnsAStringArrayWithValidStockTickers(String[] tickersToTest) {
         Assert.assertEquals("invalid returned array size", validStocks.length, tickersToTest.length);
-
         List<String> validList = Arrays.asList(validStocks);
         for(String ticker: validStocks){
             Assert.assertTrue("list does not contain " + ticker, validList.contains(ticker));

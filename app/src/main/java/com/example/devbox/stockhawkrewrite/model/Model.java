@@ -5,9 +5,6 @@ import android.support.annotation.VisibleForTesting;
 
 import com.example.devbox.stockhawkrewrite.presenter.IStockListPresenter;
 
-import org.jetbrains.annotations.TestOnly;
-
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
