@@ -12,19 +12,24 @@ import android.content.Context;
 @Database(entities = StockDto.class, version = 1)
 public abstract class StockRoomDb extends RoomDatabase {
     public static final String DATABASE_NAME = "stock.db";
-    public abstract IStockDao stockDao();
     private static StockRoomDb sDatabaseInstance;
 
-    public static StockRoomDb getsDatabaseInstance(Context context){
-        if(sDatabaseInstance == null){
-            sDatabaseInstance = Room
-                    .databaseBuilder(
-                            context,
-                            StockRoomDb.class,
-                            DATABASE_NAME
-                    ).build();
+    public abstract IStockDao stockDao();
+
+    private static final Object sLock = new Object();
+
+    public static StockRoomDb getsDatabaseInstance(Context context) {
+        synchronized (sLock) {
+            if (sDatabaseInstance == null) {
+                sDatabaseInstance = Room
+                        .databaseBuilder(
+                                context,
+                                StockRoomDb.class,
+                                DATABASE_NAME
+                        ).build();
+            }
+            return sDatabaseInstance;
         }
-        return sDatabaseInstance;
     }
 
 }

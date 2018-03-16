@@ -3,6 +3,8 @@ package com.example.devbox.stockhawkrewrite.model;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.Index;
+import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
 import android.os.Parcel;
@@ -20,7 +22,7 @@ import yahoofinance.Stock;
  * Stock Data Transfer Object
  */
 
-@Entity(tableName = "stocks")
+@Entity(tableName = "stocks", indices = {@Index(value = {"ticker"}, unique = true)})
 public class StockDto implements IStockDto, Parcelable {
 
     @PrimaryKey(autoGenerate = true)

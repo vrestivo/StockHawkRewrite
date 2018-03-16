@@ -1,7 +1,7 @@
 package com.example.devbox.stockhawkrewrite.model;
 
 /**
- * Created by devbox on 3/13/18.
+ * TODO delete if not needed
  */
 
 public interface ModelInjector {

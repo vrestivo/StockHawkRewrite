@@ -3,27 +3,24 @@ package com.example.devbox.stockhawkrewrite.model;
 import android.content.Context;
 import android.support.annotation.VisibleForTesting;
 
+import com.example.devbox.stockhawkrewrite.TwoThreadTaskExecutor;
+import com.example.devbox.stockhawkrewrite.exceptions.StockHawkException;
 import com.example.devbox.stockhawkrewrite.presenter.IStockListPresenter;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import io.reactivex.Flowable;
 
 /**
  * Model Implementation
  */
 
-public class Model implements IModel {
+public class Model implements IModel, IModel.DataLoaderCallbacks {
 
     private static IModel sModelInstance;
     private static StockRoomDb sStockRoomDb;
-    private static ExecutorService sExecutor;
+    private static TwoThreadTaskExecutor sExecutor;
     private static IStockListPresenter sPresenter;
     private static IYFNetDao sYFNetDao;
-
-
 
 
     private Model() {
@@ -32,80 +29,141 @@ public class Model implements IModel {
         }
     }
 
-    public static IModel getInstance(Context context) {
+    public static IModel getInstance(Context context, IStockListPresenter stockListPresenter) {
         if(sModelInstance==null){
             sModelInstance = new Model();
-            sExecutor = Executors.newSingleThreadExecutor();
             sYFNetDao = new YFNetDao();
            sStockRoomDb = StockRoomDb.getsDatabaseInstance(context);
         }
+
+        if(sExecutor == null){
+            sExecutor = new TwoThreadTaskExecutor();
+        }
+
+        sPresenter = stockListPresenter;
         return sModelInstance;
     }
 
-    //TODO delete after testing
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
-    public synchronized StockRoomDb getsStockRoomDb(){
+    public StockRoomDb getsStockRoomDb(){
         return sStockRoomDb;
     }
 
-    @Override
-    public synchronized void fetchStocksAndStoreInDatabase() {
 
-    }
 
     @Override
-    public Flowable<List<StockDto>> getFlowableStockList() {
-        return sStockRoomDb.stockDao().getAllStocksFlowable();
+    public void refreshStockData() {
+        Runnable task = new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    String[] stockTickersToFetch = sStockRoomDb.stockDao().getAllStockTickers();
+                    List<StockDto> fetchedStocks = sYFNetDao.fetchStocks(stockTickersToFetch);
+                    for (StockDto stock: fetchedStocks) {
+                        sStockRoomDb.stockDao().insertStocks(stock);
+                    }
+                }
+                catch (StockHawkException exception){
+                    sExecutor.mainThreadExecutor().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            notifyError(exception.getMessage());
+                        }
+                    });
+                }
+            }
+        };
+        sExecutor.iOExecutor().execute(task);
     }
 
-    @Override
-    public void clearStockDatabase() {
-
-    }
 
     @Override
     public void fetchASingleStockAndStoreInDatabase(String stockToAdd) {
-
+        if(stockToAdd!=null) {
+            Runnable fetchASingleSTockTask = new Runnable() {
+                @Override
+                public void run() {
+                    try{
+                        StockDto fetchedStock = sYFNetDao.fetchASingleStock(stockToAdd);
+                        sStockRoomDb.stockDao().insertStocks(fetchedStock);
+                    }
+                    catch (StockHawkException exception){
+                        exception.printStackTrace();
+                        System.out.println("DEBUG: _inside catch");
+                        sExecutor.mainThreadExecutor().execute(
+                                new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        notifyError(exception.getMessage());
+                                    }
+                                }
+                        );
+                    }
+                }
+            };
+            sExecutor.iOExecutor().execute(fetchASingleSTockTask);
+        }
     }
+
+
+    @Override
+    public Flowable<List<StockDto>> getFlowableStockList() {
+        //Room library will handle this asynchronously
+        return sStockRoomDb.stockDao().getAllStocksFlowable();
+    }
+
 
     @Override
     public void deleteASingleStock(String ticker) {
+        Runnable deleteStockTask = new Runnable() {
+            @Override
+            public void run() {
+                sStockRoomDb.stockDao().deleteASingleStock(ticker);
+            }
+        };
 
+        sExecutor.iOExecutor().execute(deleteStockTask);
     }
+
 
     @Override
-    public synchronized void refreshStockData() {
-
-        //TODO get a list of stocks to refresh
-        String[] tickerToFetch = getAllStockTickers();
-        List<StockDto> fetchedStocks = sYFNetDao.fetchStocks(tickerToFetch);
-        //TODO download stocks data
-        //TODO check if data for all stocks has been downloaded
-        //TODO save stock data to the database
-        //TODO notify user of errors
+    public void clearStockDatabase() {
+        Runnable clearAllTask = new Runnable() {
+            @Override
+            public void run() {
+                sStockRoomDb.stockDao().deleteAllStocks();
+            }
+        };
+        sExecutor.iOExecutor().execute(clearAllTask);
     }
+
 
     @Override
-    public StockDto getStockFromDbByTicker(String tickerToGet) {
-        return null;
+    public void notifyError(String errorMessage) {
+        if(sPresenter!=null) {
+            sPresenter.notifyError(errorMessage);
+        }
     }
 
-    @Override
-    public void bindPresenter(IStockListPresenter presenter) {
-
-    }
 
     @Override
     public void unbindPresenter() {
-        if(!sExecutor.isShutdown()){
-            sExecutor.shutdownNow();
+        if(sPresenter!=null){
+            sPresenter = null;
         }
-        sPresenter = null;
     }
 
 
     @Override
-    public synchronized String[] getAllStockTickers() {
-        return sStockRoomDb.stockDao().getAllStockTickers();
+    public void onDataNotAvailable() {
+        if(sPresenter!=null){
+            sPresenter.notifyDatabaseEmpty();
+        }
+    }
+
+
+    @Override
+    public void onDataError(String errorMessage) {
+        notifyError(errorMessage);
     }
 }

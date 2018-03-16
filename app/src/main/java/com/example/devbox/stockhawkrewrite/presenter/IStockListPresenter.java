@@ -7,12 +7,18 @@ import java.util.List;
 import io.reactivex.Flowable;
 
 /**
- * Created by devbox on 3/9/18.
+ * Presenter for the StockListView
  */
 
 public interface IStockListPresenter {
-    Flowable<List<StockDto>> loadStocks();
+    void init();
     void addStock(String stockTickerToAdd);
-    void notifyStockListUpdated(List<StockDto> newStockList);
+    void loadStocks();
+    void notifyStockListUpdated(Flowable<List<StockDto>> newStockListFlowable);
     void notifyError(String errorMessage);
+    void addAStock(String stockTicker);
+    void deleteAStock();
+    void refreshStockData();
+    void notifyDatabaseEmpty();
+    void cleanup();
 }

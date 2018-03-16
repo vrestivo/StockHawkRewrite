@@ -190,7 +190,7 @@ public class RoomDbStockDaoTest {
         Assert.assertNull(stockDto);
     }
 
-    
+
 
     @Test
     public void getAllStockTickersTest(){

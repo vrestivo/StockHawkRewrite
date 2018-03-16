@@ -3,6 +3,7 @@ package com.example.devbox.stockhawkrewrite.model;
 import android.content.Context;
 import android.support.annotation.VisibleForTesting;
 
+import com.example.devbox.stockhawkrewrite.exceptions.StockHawkException;
 import com.example.devbox.stockhawkrewrite.presenter.IStockListPresenter;
 
 import java.util.List;
@@ -15,27 +16,26 @@ import io.reactivex.Flowable;
 
 public interface IModel {
 
-    void fetchStocksAndStoreInDatabase();
-
-    Flowable<List<StockDto>> getFlowableStockList();
-
-    void clearStockDatabase();
-
-    void fetchASingleStockAndStoreInDatabase(String stockToAdd); //TODO add throws clause
-
-    void deleteASingleStock(String ticker);
+    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+    public StockRoomDb getsStockRoomDb();
 
     void refreshStockData();
 
-    void bindPresenter(IStockListPresenter presenter);
+    void fetchASingleStockAndStoreInDatabase(String stockToAdd);
+
+    Flowable<List<StockDto>> getFlowableStockList();
+
+    void deleteASingleStock(String ticker);
+
+    void clearStockDatabase();
+
+    void notifyError(String errorMessage);
 
     void unbindPresenter();
 
-    StockDto getStockFromDbByTicker(String tickerToGet);
-
-    String[] getAllStockTickers();
-
-    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
-    StockRoomDb getsStockRoomDb();
+    interface DataLoaderCallbacks{
+        void onDataNotAvailable();
+        void onDataError(String errorMessage);
+    }
 
 }
