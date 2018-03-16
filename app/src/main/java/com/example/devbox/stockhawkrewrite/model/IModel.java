@@ -17,7 +17,7 @@ import io.reactivex.Flowable;
 public interface IModel {
 
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
-    public StockRoomDb getsStockRoomDb();
+    public StockRoomDb getStockRoomDb();
 
     void refreshStockData();
 

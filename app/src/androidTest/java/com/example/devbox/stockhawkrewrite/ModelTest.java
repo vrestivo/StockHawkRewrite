@@ -30,8 +30,7 @@ import static org.mockito.Mockito.*;
 @RunWith(AndroidJUnit4.class)
 public class ModelTest {
 
-    @Mock
-    private static IStockListPresenter mStockListPresenter;
+
     private static IModel mModelUderTest;
     private String[] mValidStocks = {"TSLA", "IBM", "BA"};
     private String mSingleTestTicker = "NOC";
@@ -39,6 +38,8 @@ public class ModelTest {
     private String mTestErrorMessage = "test_error_message";
     private static final String DELETE_ALL_QUERY = "DELETE FROM stocks;";
 
+    @Mock
+    private static IStockListPresenter mStockListPresenter;
 
     @BeforeClass
     public static void testClassSetup(){
@@ -49,13 +50,14 @@ public class ModelTest {
     @After
     public void testCleanup()
     {
-        mModelUderTest.getsStockRoomDb().query(new SimpleSQLiteQuery(DELETE_ALL_QUERY));
+        mModelUderTest.getStockRoomDb().query(new SimpleSQLiteQuery(DELETE_ALL_QUERY));
+        clearInvocations(mStockListPresenter);
     }
 
 
     @AfterClass
     public static void testClassCleanup(){
-        mModelUderTest.getsStockRoomDb().query(new SimpleSQLiteQuery(DELETE_ALL_QUERY));
+        mModelUderTest.getStockRoomDb().query(new SimpleSQLiteQuery(DELETE_ALL_QUERY));
     }
 
 
@@ -72,7 +74,7 @@ public class ModelTest {
 
     private void givenInitializedModel(){
         Assert.assertNotNull(mModelUderTest);
-        Assert.assertNotNull(mModelUderTest.getsStockRoomDb());
+        Assert.assertNotNull(mModelUderTest.getStockRoomDb());
     }
 
     private void whenASingleStockIsFetchedAndAddedToDatabase(){
@@ -80,7 +82,7 @@ public class ModelTest {
     }
 
     private void stockCanBeFoundInTheDatabase() {
-        StockDto retrievedStock = mModelUderTest.getsStockRoomDb().stockDao().searchForASingleStock(mSingleTestTicker);
+        StockDto retrievedStock = mModelUderTest.getStockRoomDb().stockDao().searchForASingleStock(mSingleTestTicker);
         Assert.assertNotNull("retrieved stock is null", retrievedStock);
         Assert.assertEquals("retrieved ticked does not match", mSingleTestTicker, retrievedStock.getTicker());
     }
@@ -91,7 +93,7 @@ public class ModelTest {
     }
 
     private void stockNotFoundInDatabase() {
-        StockDto retrievedStock = mModelUderTest.getsStockRoomDb().stockDao().searchForASingleStock(mSingleTestTicker);
+        StockDto retrievedStock = mModelUderTest.getStockRoomDb().stockDao().searchForASingleStock(mSingleTestTicker);
         Assert.assertNull("retrieved stock is not null", retrievedStock);
     }
 
@@ -110,7 +112,7 @@ public class ModelTest {
         for (String ticker : mValidStocks) {
             StockDto testStockToInsert = new StockDto();
             testStockToInsert.setTicker(ticker);
-            mModelUderTest.getsStockRoomDb().stockDao().insertStocks(testStockToInsert);
+            mModelUderTest.getStockRoomDb().stockDao().insertStocks(testStockToInsert);
         }
     }
 
@@ -119,7 +121,7 @@ public class ModelTest {
     }
 
     private void allDataIsErasedFromTheDatabase() {
-        List<StockDto> stockDtoList = mModelUderTest.getsStockRoomDb().stockDao().getAllStocks();
+        List<StockDto> stockDtoList = mModelUderTest.getStockRoomDb().stockDao().getAllStocks();
         Assert.assertTrue("there are still stocks remaining in the database", stockDtoList.size() == 0);
     }
 
@@ -156,7 +158,7 @@ public class ModelTest {
 
     private void dataBaseHasValidResults() {
         for (String ticker :mValidStocks) {
-            StockDto stockToVerify = mModelUderTest.getsStockRoomDb().stockDao().searchForASingleStock(ticker);
+            StockDto stockToVerify = mModelUderTest.getStockRoomDb().stockDao().searchForASingleStock(ticker);
             Assert.assertEquals("stock not found: " + ticker,
                     ticker,
                     stockToVerify.getTicker());

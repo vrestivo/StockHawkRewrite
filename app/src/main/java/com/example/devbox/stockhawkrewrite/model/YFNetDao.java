@@ -1,5 +1,6 @@
 package com.example.devbox.stockhawkrewrite.model;
 
+import com.example.devbox.stockhawkrewrite.exceptions.EmptyStockListException;
 import com.example.devbox.stockhawkrewrite.exceptions.InvalidStockException;
 import com.example.devbox.stockhawkrewrite.exceptions.StockHawkException;
 import com.example.devbox.stockhawkrewrite.exceptions.UnableToDownloadDataException;
@@ -23,8 +24,8 @@ public class YFNetDao implements IYFNetDao {
         List<StockDto> result;
 
 
-        if (tickers == null) {
-            throw new InvalidStockException("StockList is Empty");
+        if (tickers == null || tickers.length < 1) {
+            throw new EmptyStockListException("Stock list is empty");
         }
 
         Map<String, Stock> stockData;
@@ -57,6 +58,9 @@ public class YFNetDao implements IYFNetDao {
         Stock stock;
         try {
             stock = YahooFinance.get(ticker);
+            if (stock == null) {
+                throw new UnableToDownloadDataException("Unable to download data for " + ticker);
+            }
         } catch (FileNotFoundException fnf) {
             fnf.printStackTrace();
             throw new InvalidStockException("Invalid Stock");
@@ -65,11 +69,9 @@ public class YFNetDao implements IYFNetDao {
             throw new UnableToDownloadDataException("Unable to download data for " + ticker);
         }
 
-        if (stock == null) {
-            throw new UnableToDownloadDataException("Unable to download data for " + ticker);
-        }
-
         return new StockDto(stock);
+
     }
+
 }
 

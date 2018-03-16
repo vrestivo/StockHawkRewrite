@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.VisibleForTesting;
 
 import com.example.devbox.stockhawkrewrite.TwoThreadTaskExecutor;
+import com.example.devbox.stockhawkrewrite.exceptions.EmptyStockListException;
 import com.example.devbox.stockhawkrewrite.exceptions.StockHawkException;
 import com.example.devbox.stockhawkrewrite.presenter.IStockListPresenter;
 
@@ -45,7 +46,7 @@ public class Model implements IModel, IModel.DataLoaderCallbacks {
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.NONE)
-    public StockRoomDb getsStockRoomDb(){
+    public StockRoomDb getStockRoomDb(){
         return sStockRoomDb;
     }
 
@@ -62,6 +63,16 @@ public class Model implements IModel, IModel.DataLoaderCallbacks {
                     for (StockDto stock: fetchedStocks) {
                         sStockRoomDb.stockDao().insertStocks(stock);
                     }
+                }
+                catch (EmptyStockListException emptyListException){
+                    sExecutor.mainThreadExecutor().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(sPresenter!=null){
+                                sPresenter.notifyDatabaseEmpty();
+                            }
+                        }
+                    });
                 }
                 catch (StockHawkException exception){
                     sExecutor.mainThreadExecutor().execute(new Runnable() {
