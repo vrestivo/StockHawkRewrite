@@ -33,8 +33,9 @@ public class StockListAdapter extends RecyclerView.Adapter<StockListAdapter.Stoc
     @Override
     public void onBindViewHolder(StockListItemViewHolder holder, int position) {
         if(mStockList!=null && position < mStockList.size()){
+            holder.mmId = mStockList.get(position).getId();
             holder.mmTicker.setText(mStockList.get(position).getTicker());
-            holder.mmPrice.setText(String.valueOf(mStockList.get(position).getAsk()));
+            holder.mmPrice.setText(String.valueOf(mStockList.get(position).getRegPrice()));
             holder.mmPriceChange.setText(String.valueOf(mStockList.get(position).getChangePercent()));
         }
     }
@@ -52,10 +53,17 @@ public class StockListAdapter extends RecyclerView.Adapter<StockListAdapter.Stoc
         return 0;
     }
 
+    public String getTickerAtPosition(int position){
+        if(mStockList!=null && position < mStockList.size()){
+           return mStockList.get(position).getTicker();
+        }
+        return "";
+    }
+
     public class StockListItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        //TODO
         View mmRootView;
+        public int mmId;
         public TextView mmTicker;
         public TextView mmPrice;
         public TextView mmPriceChange;

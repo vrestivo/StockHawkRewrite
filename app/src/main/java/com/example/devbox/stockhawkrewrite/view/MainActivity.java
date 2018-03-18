@@ -5,6 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -25,19 +28,49 @@ public class MainActivity extends AppCompatActivity implements IStockListView {
     private StockListAdapter mAdapter;
     private TextInputEditText mEnterStockField;
     private Button mAddStockButton;
+    private ItemTouchHelper.SimpleCallback mSwipeCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mSwipeCallback = new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                if(direction == ItemTouchHelper.LEFT && mPresenter!=null){
+                    mPresenter.deleteAStock(mAdapter.getTickerAtPosition(viewHolder.getAdapterPosition()));
+                }
+            }
+        };
 
         mStockRecyclerView = findViewById(R.id.stocks_list);
         mAdapter = new StockListAdapter();
         mStockRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         mStockRecyclerView.setAdapter(mAdapter);
+        new ItemTouchHelper(mSwipeCallback).attachToRecyclerView(mStockRecyclerView);
+
+
         mEnterStockField = findViewById(R.id.ticker_input_edit_text);
-        //TODO add input filter
+        InputFilter lengthLimit = new InputFilter.LengthFilter(5);
+        InputFilter capsOnly = new InputFilter() {
+            @Override
+            public CharSequence filter(CharSequence charSequence, int i, int i1, Spanned spanned, int i2, int i3) {
+                for (int c = i; c < i1; c++) {
+                    if (!Character.isUpperCase(charSequence.charAt(c))) {
+                        return "";
+                    }
+                }
+                return null;
+            }
+        };
+        mEnterStockField.setFilters(new InputFilter[]{capsOnly, lengthLimit});
+
         mAddStockButton = findViewById(R.id.add_stock_button);
         mAddStockButton.setOnClickListener(
                 new View.OnClickListener() {
@@ -49,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements IStockListView {
                 }
         );
     }
+
 
     @Override
     protected void onStart() {
