@@ -23,6 +23,9 @@ import yahoofinance.histquotes.HistoricalQuote;
 
 public class UtilTest {
 
+    private Stock mMalformedStock;
+    private StockDto mStockDtoUnderTest;
+
     public static String sTestData = "1454313600000,\n" +
             "1456819200000, 55.230000\n" +
             "1459494000000, 49.869999\n" +
@@ -246,7 +249,7 @@ public class UtilTest {
     private List<StockDto> whenConvertingFromStockMapToStockDtoList(Map<String, Stock> stockMap) {
         List<StockDto> results  = Util.convertStockMapToStockDtoList(stockMap);
         Assert.assertNotNull(results);
-        Assert.assertTrue(results.size() > 0);
+        Assert.assertTrue(results.size() == stockMap.size());
         return results;
     }
 
@@ -263,5 +266,51 @@ public class UtilTest {
             Assert.assertEquals(stock.getName(), stockDto.getName());
             aValidEntryListIsCreated(stock, stockDto.getHistory());
         }
+    }
+
+
+    @Test
+    public void stockNormalizerTest(){
+        givenAMalformedStockObjectWithMissingData();
+        whenStockDtoIsInitializedWithAMalformedStockObject();
+        allFieldsAreInitializedWithDefaultNonNullValues();
+    }
+
+    private void givenAMalformedStockObjectWithMissingData() {
+        try {
+            mMalformedStock = YahooFinance.get("BAO");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void whenStockDtoIsInitializedWithAMalformedStockObject() {
+        mStockDtoUnderTest = new StockDto(mMalformedStock);
+    }
+
+    private void allFieldsAreInitializedWithDefaultNonNullValues() {
+        Assert.assertNotNull("mId is null",mStockDtoUnderTest.getId());
+        Assert.assertNotNull("mTicker is null",mStockDtoUnderTest.getTicker());
+        Assert.assertNotNull("mRegPrice is null",mStockDtoUnderTest.getRegPrice());
+        Assert.assertNotNull("mBid is null",mStockDtoUnderTest.getBid());
+        Assert.assertNotNull("mAsk is null",mStockDtoUnderTest.getAsk());
+        Assert.assertNotNull("mHistory is null",mStockDtoUnderTest.getHistory());
+        Assert.assertNotNull("mName is null",mStockDtoUnderTest.getName());
+        Assert.assertNotNull("mChangeCurrency is null",mStockDtoUnderTest.getChangeCurrency());
+        Assert.assertNotNull("mChangePercent is null",mStockDtoUnderTest.getChangePercent());
+        Assert.assertNotNull("mYearHigh is null",mStockDtoUnderTest.getYearHigh());
+        Assert.assertNotNull("mYearLow is null",mStockDtoUnderTest.getYearLow());
+    }
+
+
+    @Test
+    public void stockInitializationWithNullArgument(){
+        givenNullStockObject();
+        whenStockDtoIsInitializedWithAMalformedStockObject();
+        allFieldsAreInitializedWithDefaultNonNullValues();
+    }
+
+    private void givenNullStockObject() {
+        mMalformedStock = null;
     }
 }

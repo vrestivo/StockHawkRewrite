@@ -2,14 +2,17 @@ package com.example.devbox.stockhawkrewrite.model;
 
 import android.support.annotation.NonNull;
 
+import com.example.devbox.stockhawkrewrite.exceptions.UnableToDownloadDataException;
 import com.github.mikephil.charting.data.Entry;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import yahoofinance.Stock;
 import yahoofinance.histquotes.HistoricalQuote;
+import yahoofinance.quotes.stock.StockQuote;
 
 /**
  * Created by devbox on 2/20/18.
@@ -19,6 +22,7 @@ public class Util {
 
     public static final String REGEX_DATE = "\\d{0,14}";
     public static final String REGEX_PRICE = "\\d{0,7}\\.\\d{0,7}";
+    public static final String UNKNOWN = "Unknown";
 
 
 
@@ -77,9 +81,8 @@ public class Util {
                     }
                 }
             }
-            return entries;
         }
-        return null;
+        return entries;
     }
 
     /**
@@ -115,5 +118,42 @@ public class Util {
         }
     }
 
+    public static void normalizeStockDtoInitialization(StockDto stockDtoToNormalize, Stock initializationObject){
+        if(stockDtoToNormalize!=null && initializationObject!=null){
+            String name = UNKNOWN;
+            String ticker = UNKNOWN;
+
+            if(initializationObject.getName() != null){
+                name = initializationObject.getName();
+            }
+
+            if(initializationObject.getSymbol()!=null){
+                ticker = initializationObject.getSymbol();
+            }
+
+
+            stockDtoToNormalize.setTicker(ticker);
+            stockDtoToNormalize.setName(name);
+
+            StockQuote quote = initializationObject.getQuote();
+            if(quote!=null){
+                stockDtoToNormalize.setRegPrice(validateFloatInitialization(quote.getPrice()));
+                stockDtoToNormalize.setBid(validateFloatInitialization(quote.getBid()));
+                stockDtoToNormalize.setAsk(validateFloatInitialization(quote.getAsk()));
+                stockDtoToNormalize.setChangeCurrency(validateFloatInitialization(quote.getChange()));
+                stockDtoToNormalize.setChangePercent(validateFloatInitialization(quote.getChangeInPercent()));
+                stockDtoToNormalize.setYearHigh(validateFloatInitialization(quote.getYearHigh()));
+                stockDtoToNormalize.setYearLow(validateFloatInitialization(quote.getYearLow()));
+            }
+        }
+    }
+
+    private static float validateFloatInitialization(BigDecimal bigDecimal){
+        if(bigDecimal!=null){
+            return bigDecimal.floatValue();
+        }
+        return 0;
+    }
+    
 
 }

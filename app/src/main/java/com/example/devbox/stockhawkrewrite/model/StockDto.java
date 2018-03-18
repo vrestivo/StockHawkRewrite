@@ -13,6 +13,7 @@ import android.os.Parcelable;
 import com.github.mikephil.charting.data.Entry;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +30,8 @@ public class StockDto implements IStockDto, Parcelable {
     private int mId;
     @ColumnInfo(name = "ticker")
     private String mTicker;
+    @ColumnInfo(name = "reg_price")
+    private float mRegPrice;
     @ColumnInfo(name = "bid")
     private float mBid;
     @ColumnInfo(name = "ask")
@@ -48,29 +51,32 @@ public class StockDto implements IStockDto, Parcelable {
     private float mYearLow;
 
     @Ignore
+    private final String STRING_DEFAULT = "";
+
+    @Ignore
     public StockDto(Stock stock) {
         if (stock != null) {
-            this.mTicker = stock.getSymbol();
-            this.mBid = stock.getQuote().getBid().floatValue();
-            this.mAsk = stock.getQuote().getAsk().floatValue();
-            mName = stock.getName();
-            this.mChangeCurrency = stock.getQuote().getChange().floatValue();
-            this.mChangePercent = stock.getQuote().getChangeInPercent().floatValue();
-            this.mYearHigh = stock.getQuote().getYearHigh().floatValue();
-            this.mYearLow = stock.getQuote().getYearLow().floatValue();
-
+            Util.normalizeStockDtoInitialization(this, stock);
             try {
                 this.mHistory = Util.historicalStockHistoricalQuoteListtoEntryList(stock.getHistory());
             } catch (IOException e) {
                 e.printStackTrace();
+                this.mHistory = new ArrayList<Entry>();
             }
+        } else {
+            initializeMembersWithNormalizedValues();
         }
     }
 
 
     public StockDto() {
+        initializeMembersWithNormalizedValues();
+    }
+
+    private void initializeMembersWithNormalizedValues() {
         this.mId = 0;
         this.mTicker = "";
+        this.mRegPrice = 0;
         this.mBid = 0;
         this.mAsk = 0;
         this.mHistory = new ArrayList<>();
@@ -83,10 +89,10 @@ public class StockDto implements IStockDto, Parcelable {
 
 
     //Parcelable Implementation
-    private StockDto(Parcel source){
-        //todoRead data from source
+    private StockDto(Parcel source) {
         setId(source.readInt());
         setTicker(source.readString());
+        setRegPrice(source.readFloat());
         setBid(source.readFloat());
         setAsk(source.readFloat());
         setHistory(Util.historicalStockQuotesCSVtoEntryList(source.readString()));
@@ -95,10 +101,10 @@ public class StockDto implements IStockDto, Parcelable {
         setChangePercent(source.readFloat());
         setYearHigh(source.readFloat());
         setYearLow(source.readFloat());
-
     }
 
-    public static final Parcelable.Creator<StockDto> CREATOR = new Parcelable.Creator<StockDto>(){
+
+    public static final Parcelable.Creator<StockDto> CREATOR = new Parcelable.Creator<StockDto>() {
         @Override
         public StockDto createFromParcel(Parcel source) {
             return new StockDto(source);
@@ -117,6 +123,7 @@ public class StockDto implements IStockDto, Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(mId);
         dest.writeString(mTicker);
+        dest.writeFloat(mRegPrice);
         dest.writeFloat(mBid);
         dest.writeFloat(mAsk);
         dest.writeString(Util.historicalStockQuoteEntryListToCSVString(mHistory));
@@ -144,8 +151,23 @@ public class StockDto implements IStockDto, Parcelable {
 
     @Override
     public void setTicker(String mTicker) {
+        if(mTicker==null){
+            this.mTicker = STRING_DEFAULT;
+            return;
+        }
         this.mTicker = mTicker;
     }
+
+    @Override
+    public float getRegPrice() {
+        return mRegPrice;
+    }
+
+    @Override
+    public void setRegPrice(float mRegPrice) {
+        this.mRegPrice = mRegPrice;
+    }
+
 
     @Override
     public float getBid() {
@@ -174,6 +196,10 @@ public class StockDto implements IStockDto, Parcelable {
 
     @Override
     public void setHistory(List<Entry> mHistory) {
+        if (mHistory == null) {
+            this.mHistory = new ArrayList<>();
+            return;
+        }
         this.mHistory = mHistory;
     }
 
@@ -184,6 +210,9 @@ public class StockDto implements IStockDto, Parcelable {
 
     @Override
     public void setName(String mName) {
+        if(mName == null){
+            this.mName = STRING_DEFAULT;
+        }
         this.mName = mName;
     }
 

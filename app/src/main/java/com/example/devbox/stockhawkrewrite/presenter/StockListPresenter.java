@@ -26,7 +26,7 @@ public class StockListPresenter implements IStockListPresenter {
 
     public StockListPresenter(IStockListView view, Context context) {
         mView = view;
-        mModel = Model.getInstance(context.getApplicationContext(), this);
+        mModel = Model.getInstance(context, this);
         loadStocks();
     }
 

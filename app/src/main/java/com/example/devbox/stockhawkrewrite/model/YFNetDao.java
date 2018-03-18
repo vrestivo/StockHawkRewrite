@@ -61,6 +61,9 @@ public class YFNetDao implements IYFNetDao {
             if (stock == null) {
                 throw new UnableToDownloadDataException("Unable to download data for " + ticker);
             }
+            else {
+                return new StockDto(stock);
+            }
         } catch (FileNotFoundException fnf) {
             fnf.printStackTrace();
             throw new InvalidStockException("Invalid Stock");
@@ -68,8 +71,6 @@ public class YFNetDao implements IYFNetDao {
             e.printStackTrace();
             throw new UnableToDownloadDataException("Unable to download data for " + ticker);
         }
-
-        return new StockDto(stock);
 
     }
 

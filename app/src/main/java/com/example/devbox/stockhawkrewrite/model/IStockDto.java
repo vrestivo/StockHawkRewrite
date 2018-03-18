@@ -21,6 +21,10 @@ interface IStockDto extends Parcelable {
 
     void setTicker(String mTicker);
 
+    float getRegPrice();
+
+    void setRegPrice(float mRegPrice);
+
     float getBid();
 
     void setBid(float mBid);

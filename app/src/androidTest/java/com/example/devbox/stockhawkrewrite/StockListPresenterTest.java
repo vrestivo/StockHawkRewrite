@@ -50,11 +50,13 @@ public class StockListPresenterTest {
     public static void testTestClassSetup(){
         sView = mock(IStockListView.class);
         sPresenterUnderTest = new StockListPresenter(sView, InstrumentationRegistry.getTargetContext());
+        sPresenterUnderTest.getModel().getStockRoomDb().stockDao().deleteAllStocks();
     }
 
     @AfterClass
     public static void afterTestClassCleaup(){
         sPresenterUnderTest.cleanup();
+        sPresenterUnderTest.getModel().getStockRoomDb().stockDao().deleteAllStocks();
     }
 
 
@@ -109,7 +111,7 @@ public class StockListPresenterTest {
         List<StockDto> retrievedStocks = sPresenterUnderTest.getModel().getStockRoomDb().stockDao().getAllStocks();
         List<String> validTickerList = Arrays.asList(mValidTestStockTickerList);
         for(StockDto stockDto : retrievedStocks){
-            Assert.assertTrue("retrieved tickers don't match", validTickerList.contains(stockDto.getTicker()));
+            Assert.assertTrue("retrieved tickers don't match " + stockDto.getTicker(), validTickerList.contains(stockDto.getTicker()));
             Assert.assertNotNull(stockDto.getName());
         }
         SystemClock.sleep(2000);
