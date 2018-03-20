@@ -1,6 +1,27 @@
 <resources>
     <string name="app_name">StockHawkRewrite</string>
 
+    <!--buttons-->
     <string name="btn_add_stock">Add Stock</string>
+
+
+    <!--details fields-->
+
+    <string name="detail_name"></string>
+    <string name="detail_ticker"></string>
+    <string name="detail_price"></string>
+    <string name="detail_ask"></string>
+    <string name="detail_bid"></string>
+    <string name="detail_percent_change"></string>
+    <string name="detail_currency_change"></string>
+    <string name="detail_"></string>
+    <string name="detail_name"></string>
+    <string name="detail_name"></string>
+    <string name="detail_name"></string>
+    <string name="detail_name"></string>
+    <string name="detail_name"></string>
+
+
+
 
 </resources>
