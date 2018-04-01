@@ -17,7 +17,7 @@
         app:layout_constraintEnd_toStartOf="@id/add_stock_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/stocks_list"
+        app:layout_constraintBottom_toTopOf="@+id/stock_list"
         >
 
         <android.support.design.widget.TextInputEditText
@@ -42,7 +42,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/stocks_list"
+        android:id="@+id/stock_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@id/add_stock_button"

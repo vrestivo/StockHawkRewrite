@@ -1,5 +1,7 @@
 package com.example.devbox.stockhawkrewrite.view;
 
+import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,6 +16,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.devbox.stockhawkrewrite.R;
+import com.example.devbox.stockhawkrewrite.Util.MyIdlingResources;
 import com.example.devbox.stockhawkrewrite.model.StockDto;
 import com.example.devbox.stockhawkrewrite.presenter.IStockListPresenter;
 import com.example.devbox.stockhawkrewrite.presenter.StockListPresenter;
@@ -29,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements IStockListView {
     private TextInputEditText mEnterStockField;
     private Button mAddStockButton;
     private ItemTouchHelper.SimpleCallback mSwipeCallback;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements IStockListView {
             }
         };
 
-        mStockRecyclerView = findViewById(R.id.stocks_list);
+        mStockRecyclerView = findViewById(R.id.stock_list);
         mAdapter = new StockListAdapter();
         mStockRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         mStockRecyclerView.setAdapter(mAdapter);
@@ -76,8 +80,13 @@ public class MainActivity extends AppCompatActivity implements IStockListView {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        //TODO remove test logic
+                        if(getCountingIdlingResource()!=null){
+                            getCountingIdlingResource().setIdleState(false);
+                        }
+
                         String ticker = mEnterStockField.getText().toString();
-                        mPresenter.addAStock(ticker);
+                        addAStock(ticker);
                     }
                 }
         );
@@ -113,6 +122,13 @@ public class MainActivity extends AppCompatActivity implements IStockListView {
     }
 
     @Override
+    public void addAStock(String stockToAdd){
+        if(mPresenter!=null && stockToAdd != null){
+            mPresenter.addAStock(stockToAdd);
+        }
+    }
+
+    @Override
     public void showStockList() {
 
     }
@@ -130,15 +146,26 @@ public class MainActivity extends AppCompatActivity implements IStockListView {
     @Override
     public void onStockListLoaded(List<StockDto> stockDtoList) {
         if(mAdapter!=null){
+
             mAdapter.setStockList(stockDtoList);
             //TODO delete
             Toast.makeText(this, "newStockList size: " + stockDtoList.size(), Toast.LENGTH_SHORT).show();
+        }
+        //todo remove test logic
+        if(getCountingIdlingResource()!=null){
+            getCountingIdlingResource().setIdleState(true);
         }
     }
 
     @Override
     public void showListIsEmpty() {
 
+    }
+
+
+    @VisibleForTesting
+    public MyIdlingResources getCountingIdlingResource(){
+        return MyIdlingResources.getInstance();
     }
 
 }

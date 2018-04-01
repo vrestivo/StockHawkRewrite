@@ -1,4 +1,4 @@
-package com.example.devbox.stockhawkrewrite;
+package com.example.devbox.stockhawkrewrite.model;
 
 import android.arch.persistence.room.Room;
 import android.support.test.InstrumentationRegistry;

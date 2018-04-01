@@ -1,8 +1,9 @@
-package com.example.devbox.stockhawkrewrite.model;
+package com.example.devbox.stockhawkrewrite.Util;
 
 import android.support.annotation.NonNull;
 
 import com.example.devbox.stockhawkrewrite.exceptions.UnableToDownloadDataException;
+import com.example.devbox.stockhawkrewrite.model.StockDto;
 import com.github.mikephil.charting.data.Entry;
 
 import java.math.BigDecimal;
@@ -57,7 +58,7 @@ public class Util {
      * converts raw historical stock data in CSV format
      * to List<Entry> usable for the Chart class
      * @param rawData raw stock price data in CSV format
-     * @return entries in List<Entry> format, readty for the
+     * @return entries in List<Entry> format, ready for the
      * Chart class consumption
      */
     public static List<Entry> historicalStockQuotesCSVtoEntryList(@NonNull String rawData){

@@ -2,6 +2,7 @@ package com.example.devbox.stockhawkrewrite.model;
 
 import android.arch.persistence.room.TypeConverter;
 
+import com.example.devbox.stockhawkrewrite.Util.Util;
 import com.github.mikephil.charting.data.Entry;
 
 import java.util.List;

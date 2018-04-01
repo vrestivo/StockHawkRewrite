@@ -10,6 +10,9 @@ import java.util.List;
 
 public interface IStockListView {
     void displayError(String errorMessage);
+
+    void addAStock(String stockToAdd);
+
     void showStockList();
     void showStockDetails();
     void forceDataUpdate();

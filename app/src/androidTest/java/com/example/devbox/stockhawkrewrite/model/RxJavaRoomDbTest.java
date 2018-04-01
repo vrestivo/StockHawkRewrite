@@ -1,13 +1,10 @@
-package com.example.devbox.stockhawkrewrite;
+package com.example.devbox.stockhawkrewrite.model;
 import android.arch.persistence.room.Room;
 import android.os.SystemClock;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.example.devbox.stockhawkrewrite.model.StockDto;
-import com.example.devbox.stockhawkrewrite.model.StockRoomDb;
-import com.example.devbox.stockhawkrewrite.model.Util;
-import com.example.devbox.stockhawkrewrite.model.YFNetDao;
+import com.example.devbox.stockhawkrewrite.Util.Util;
 
 import junit.framework.Assert;
 
@@ -25,7 +22,6 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import yahoofinance.Stock;
 
 
 /**

@@ -1,7 +1,7 @@
 package com.example.devbox.stockhawkrewrite;
 
 import com.example.devbox.stockhawkrewrite.model.StockDto;
-import com.example.devbox.stockhawkrewrite.model.Util;
+import com.example.devbox.stockhawkrewrite.Util.Util;
 import com.github.mikephil.charting.data.Entry;
 
 import junit.framework.Assert;
