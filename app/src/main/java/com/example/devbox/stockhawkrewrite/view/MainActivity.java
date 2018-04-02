@@ -1,6 +1,5 @@
 package com.example.devbox.stockhawkrewrite.view;
 
-import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
@@ -23,7 +22,7 @@ import com.example.devbox.stockhawkrewrite.presenter.StockListPresenter;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements IStockListView {
+public class MainActivity extends AppCompatActivity implements IStockListView, IStockListView.IShowStockDetail {
 
     private String LOG_TAG = getClass().getCanonicalName();
     private IStockListPresenter mPresenter;
@@ -32,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements IStockListView {
     private TextInputEditText mEnterStockField;
     private Button mAddStockButton;
     private ItemTouchHelper.SimpleCallback mSwipeCallback;
+    private MyIdlingResources myIdlingResources;
 
 
     @Override
@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements IStockListView {
         };
 
         mStockRecyclerView = findViewById(R.id.stock_list);
-        mAdapter = new StockListAdapter();
+        mAdapter = new StockListAdapter(this);
         mStockRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         mStockRecyclerView.setAdapter(mAdapter);
         new ItemTouchHelper(mSwipeCallback).attachToRecyclerView(mStockRecyclerView);
@@ -81,8 +81,8 @@ public class MainActivity extends AppCompatActivity implements IStockListView {
                     @Override
                     public void onClick(View v) {
                         //TODO remove test logic
-                        if(getCountingIdlingResource()!=null){
-                            getCountingIdlingResource().setIdleState(false);
+                        if(myIdlingResources!=null){
+                            myIdlingResources.setIdleState(false);
                         }
 
                         String ticker = mEnterStockField.getText().toString();
@@ -133,14 +133,13 @@ public class MainActivity extends AppCompatActivity implements IStockListView {
 
     }
 
-    @Override
-    public void showStockDetails() {
 
-    }
 
     @Override
     public void forceDataUpdate() {
-
+        if(mPresenter!=null){
+            mPresenter.refreshStockData();
+        }
     }
 
     @Override
@@ -152,20 +151,27 @@ public class MainActivity extends AppCompatActivity implements IStockListView {
             Toast.makeText(this, "newStockList size: " + stockDtoList.size(), Toast.LENGTH_SHORT).show();
         }
         //todo remove test logic
-        if(getCountingIdlingResource()!=null){
-            getCountingIdlingResource().setIdleState(true);
+        if(myIdlingResources!=null){
+            myIdlingResources.setIdleState(true);
         }
     }
 
     @Override
     public void showListIsEmpty() {
-
+        //TODO implement
     }
 
 
     @VisibleForTesting
     public MyIdlingResources getCountingIdlingResource(){
-        return MyIdlingResources.getInstance();
+        if(myIdlingResources == null){
+            myIdlingResources = MyIdlingResources.getInstance();
+        }
+        return myIdlingResources;
     }
 
+    @Override
+    public void showStockDetails(String ticker) {
+        //TODO launch stock detail activity
+    }
 }

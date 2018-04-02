@@ -9,12 +9,16 @@ import java.util.List;
  */
 
 public interface IStockListView {
+
+    public interface IShowStockDetail{
+        void showStockDetails(String ticker);
+    }
+
     void displayError(String errorMessage);
 
     void addAStock(String stockToAdd);
 
     void showStockList();
-    void showStockDetails();
     void forceDataUpdate();
     void onStockListLoaded(List<StockDto> stockDtoList);
     void showListIsEmpty();

@@ -18,8 +18,11 @@ import java.util.List;
 public class StockListAdapter extends RecyclerView.Adapter<StockListAdapter.StockListItemViewHolder> {
 
     private List<StockDto> mStockList;
+    private IStockListView.IShowStockDetail mCallback;
 
-
+    public StockListAdapter(IStockListView.IShowStockDetail callback) {
+        mCallback = callback;
+    }
 
     @Override
     public StockListItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -79,6 +82,9 @@ public class StockListAdapter extends RecyclerView.Adapter<StockListAdapter.Stoc
         @Override
         public void onClick(View v) {
             //TODO implement
+            if(mCallback!=null){
+                mCallback.showStockDetails(mmTicker.getText().toString());
+            }
         }
     }
 
