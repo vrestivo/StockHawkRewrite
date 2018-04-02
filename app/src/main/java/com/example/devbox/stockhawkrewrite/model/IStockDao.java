@@ -28,6 +28,9 @@ public interface IStockDao {
     @Query("SELECT * FROM stocks;")
     Flowable<List<StockDto>> getAllStocksFlowable();
 
+    @Query("SELECT * FROM stocks WHERE ticker == :ticker")
+    Flowable <StockDto> getASingleStockFlowable(String ticker);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertStocks(StockDto... stocks);
 

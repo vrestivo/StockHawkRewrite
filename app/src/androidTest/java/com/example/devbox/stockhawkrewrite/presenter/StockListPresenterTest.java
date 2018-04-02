@@ -1,11 +1,10 @@
-package com.example.devbox.stockhawkrewrite;
+package com.example.devbox.stockhawkrewrite.presenter;
 
 import android.os.SystemClock;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.example.devbox.stockhawkrewrite.model.StockDto;
-import com.example.devbox.stockhawkrewrite.presenter.StockListPresenter;
 import com.example.devbox.stockhawkrewrite.view.IStockListView;
 
 import junit.framework.Assert;
@@ -54,7 +53,7 @@ public class StockListPresenterTest {
     }
 
     @AfterClass
-    public static void afterTestClassCleaup(){
+    public static void afterTestClassCleanup(){
         sPresenterUnderTest.cleanup();
         sPresenterUnderTest.getModel().getStockRoomDb().stockDao().deleteAllStocks();
     }
@@ -65,7 +64,7 @@ public class StockListPresenterTest {
         givenInitializedStockListPresenter();
         whenAStockIsAdded();
         SystemClock.sleep(7000);
-        theViewIsGivenAndUpdatedStockList();
+        theViewIsGivenAnUpdatedStockList();
     }
 
     private void givenInitializedStockListPresenter() {
@@ -78,7 +77,7 @@ public class StockListPresenterTest {
         sPresenterUnderTest.addAStock(mASingleTestTicker);
     }
 
-    private void theViewIsGivenAndUpdatedStockList() {
+    private void theViewIsGivenAnUpdatedStockList() {
         verify(sView, atLeastOnce()).onStockListLoaded(anyList());
         Assert.assertEquals("invalid ticker for single stock fetch"
                 ,mASingleTestTicker,
@@ -90,7 +89,7 @@ public class StockListPresenterTest {
         givenInitializedStockListPresenter();
         givenPrepopulatedStockDatabaseWidthTestObjects();
         whenStocksAreRefreshed();
-        validDataIsStoredInDatabaseAndViewIsUpated();
+        validDataIsStoredInDatabaseAndViewIsUpdated();
     }
 
     private void givenPrepopulatedStockDatabaseWidthTestObjects() {
@@ -106,7 +105,7 @@ public class StockListPresenterTest {
         SystemClock.sleep(5000);
     }
 
-    private void validDataIsStoredInDatabaseAndViewIsUpated() {
+    private void validDataIsStoredInDatabaseAndViewIsUpdated() {
         verify(sView, atLeastOnce()).onStockListLoaded(anyList());
         List<StockDto> retrievedStocks = sPresenterUnderTest.getModel().getStockRoomDb().stockDao().getAllStocks();
         List<String> validTickerList = Arrays.asList(mValidTestStockTickerList);

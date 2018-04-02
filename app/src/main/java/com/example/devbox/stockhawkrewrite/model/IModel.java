@@ -25,13 +25,18 @@ public interface IModel {
 
     Flowable<List<StockDto>> getFlowableStockList();
 
+    Flowable <StockDto> getASingleStockFlowable(String stockToGet);
+
     void deleteASingleStock(String ticker);
 
     void clearStockDatabase();
 
     void notifyError(String errorMessage);
 
-    void unbindPresenter();
+    void unbindStockListPresenter();
+
+    void unbindStockDetailPresenter();
+
 
     interface DataLoaderCallbacks{
         void onDataNotAvailable();

@@ -61,7 +61,7 @@ public class AddAStockUITest {
 
     @Before
     public void testSetup(){
-        sIdlingRegistry.register(MyIdlingResources.getInstance());
+        sIdlingRegistry.register(rule.getActivity().getMyIdlingResource());
         stockRoomDb = StockRoomDb.getsDatabaseInstance(sTargetContext);
         stockRoomDb.stockDao().deleteAllStocks();
     }
@@ -76,8 +76,6 @@ public class AddAStockUITest {
         }
 
     }
-
-
 
 
     @Test

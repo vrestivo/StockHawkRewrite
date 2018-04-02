@@ -144,8 +144,12 @@ public class MainActivity extends AppCompatActivity implements IStockListView, I
 
     @Override
     public void onStockListLoaded(List<StockDto> stockDtoList) {
-        if(mAdapter!=null){
+        if(stockDtoList == null){
+            showListIsEmpty();
+            return;
+        }
 
+        if(mAdapter!=null){
             mAdapter.setStockList(stockDtoList);
             //TODO delete
             Toast.makeText(this, "newStockList size: " + stockDtoList.size(), Toast.LENGTH_SHORT).show();
@@ -163,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements IStockListView, I
 
 
     @VisibleForTesting
-    public MyIdlingResources getCountingIdlingResource(){
+    public MyIdlingResources getMyIdlingResource(){
         if(myIdlingResources == null){
             myIdlingResources = MyIdlingResources.getInstance();
         }

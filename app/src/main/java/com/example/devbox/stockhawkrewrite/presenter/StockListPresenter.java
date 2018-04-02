@@ -37,56 +37,64 @@ public class StockListPresenter implements IStockListPresenter {
 
     @Override
     public void loadStocks() {
-        if(mStockListFlowable==null){
+        if (mStockListFlowable == null) {
             mStockListFlowable = mModel.getFlowableStockList();
             mStockDataDisposable = mStockListFlowable
-                   .onBackpressureLatest()
-                   .observeOn(AndroidSchedulers.mainThread())
-                   .subscribe(
-                   stockDtoList -> {
-                       if(stockDtoList!=null && stockDtoList.size() > 0) {
-                           mView.onStockListLoaded(stockDtoList);
-                       }
-                   }
-           );
+                    .onBackpressureLatest()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            stockDtoList -> {
+                                if (stockDtoList != null && stockDtoList.size() > 0) {
+                                    mView.onStockListLoaded(stockDtoList);
+                                }
+                            }
+                    );
         }
     }
 
     @Override
     public void addAStock(String stockTicker) {
-        mModel.fetchASingleStockAndStoreInDatabase(stockTicker);
+        if (mModel != null) {
+            mModel.fetchASingleStockAndStoreInDatabase(stockTicker);
+        }
     }
 
     @Override
     public void deleteAStock(String stockTickerToDelete) {
-        mModel.deleteASingleStock(stockTickerToDelete);
+        if (mModel != null) {
+            mModel.deleteASingleStock(stockTickerToDelete);
+        }
     }
 
     @Override
     public void refreshStockData() {
-        mModel.refreshStockData();
+        if (mModel != null) {
+            mModel.refreshStockData();
+        }
     }
 
     @Override
     public void notifyError(String errorMessage) {
-        if(mView!=null){
+        if (mView != null) {
             mView.displayError(errorMessage);
         }
     }
 
     @Override
     public void notifyDatabaseEmpty() {
-        if(mView!=null){
+        if (mView != null) {
             mView.showListIsEmpty();
         }
     }
 
     @Override
     public void cleanup() {
-        if(!mStockDataDisposable.isDisposed()){
+        if (mStockDataDisposable != null && !mStockDataDisposable.isDisposed()) {
             mStockDataDisposable.dispose();
         }
-        mModel.unbindPresenter();
-        mModel = null;
+        if (mModel != null) {
+            mModel.unbindStockListPresenter();
+            mModel = null;
+        }
     }
 }

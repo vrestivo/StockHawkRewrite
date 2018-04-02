@@ -2,12 +2,9 @@ package com.example.devbox.stockhawkrewrite.model;
 
 import android.arch.persistence.db.SimpleSQLiteQuery;
 import android.os.SystemClock;
-import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.example.devbox.stockhawkrewrite.model.IModel;
-import com.example.devbox.stockhawkrewrite.model.Model;
-import com.example.devbox.stockhawkrewrite.model.StockDto;
+import com.example.devbox.stockhawkrewrite.presenter.IStockDetailsPresenter;
 import com.example.devbox.stockhawkrewrite.presenter.IStockListPresenter;
 
 import junit.framework.Assert;
@@ -21,6 +18,9 @@ import org.mockito.Mock;
 
 import java.util.List;
 
+import io.reactivex.Flowable;
+
+import static android.support.test.InstrumentationRegistry.getTargetContext;
 import static org.mockito.Mockito.*;
 
 /**
@@ -30,21 +30,26 @@ import static org.mockito.Mockito.*;
 @RunWith(AndroidJUnit4.class)
 public class ModelTest {
 
-
+    private static final String DELETE_ALL_QUERY = "DELETE FROM stocks;";
     private static IModel mModelUderTest;
     private String[] mValidStocks = {"TSLA", "IBM", "BA"};
     private String mSingleTestTicker = "NOC";
     private String mInvalidStockTicker = "ZZZZZZZ";
     private String mTestErrorMessage = "test_error_message";
-    private static final String DELETE_ALL_QUERY = "DELETE FROM stocks;";
+    private Flowable <StockDto> mSingleStockDtoFlowable;
 
     @Mock
     private static IStockListPresenter mStockListPresenter;
 
+    @Mock
+    private static IStockDetailsPresenter mStockDetailsPresenter;
+
     @BeforeClass
     public static void testClassSetup(){
         mStockListPresenter = mock(IStockListPresenter.class);
-        mModelUderTest = Model.getInstance(InstrumentationRegistry.getTargetContext(), mStockListPresenter);
+        mStockDetailsPresenter = mock(IStockDetailsPresenter.class);
+        mModelUderTest = Model.getInstance(getTargetContext(), mStockListPresenter);
+        Model.getInstance(getTargetContext(), mStockDetailsPresenter);
     }
 
     @After
@@ -52,6 +57,7 @@ public class ModelTest {
     {
         mModelUderTest.getStockRoomDb().query(new SimpleSQLiteQuery(DELETE_ALL_QUERY));
         clearInvocations(mStockListPresenter);
+        clearInvocations(mStockDetailsPresenter);
     }
 
 
@@ -169,7 +175,7 @@ public class ModelTest {
 
 
     @Test
-    public void presenterNotifyUserTest(){
+    public void stockListPresenterNotifyUserTest(){
         givenInitializedModel();
         whenNotifyErrorIsCalledOnPresenter();
         verifiedNotifyErrorWasCalled();
@@ -181,6 +187,25 @@ public class ModelTest {
 
     private void verifiedNotifyErrorWasCalled() {
         verify(mStockListPresenter, atLeastOnce()).notifyError(anyString());
+    }
+
+
+    @Test
+    public void fetchASingleStockTest(){
+        givenInitializedModel();
+        whenASingleStockIsFetchedAndAddedToDatabase();
+        whenSearchingForASingleStockByTicker();
+        aFlowableIsReturnedAndStockDetailPresenterNotified();
+    }
+
+    private void whenSearchingForASingleStockByTicker() {
+        mSingleStockDtoFlowable = mModelUderTest
+                .getASingleStockFlowable(mSingleTestTicker);
+    }
+
+
+    private void aFlowableIsReturnedAndStockDetailPresenterNotified() {
+        Assert.assertNotNull(mSingleStockDtoFlowable);
     }
 
 

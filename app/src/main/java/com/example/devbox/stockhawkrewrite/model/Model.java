@@ -6,6 +6,7 @@ import android.support.annotation.VisibleForTesting;
 import com.example.devbox.stockhawkrewrite.TwoThreadTaskExecutor;
 import com.example.devbox.stockhawkrewrite.exceptions.EmptyStockListException;
 import com.example.devbox.stockhawkrewrite.exceptions.StockHawkException;
+import com.example.devbox.stockhawkrewrite.presenter.IStockDetailsPresenter;
 import com.example.devbox.stockhawkrewrite.presenter.IStockListPresenter;
 
 import java.util.List;
@@ -20,7 +21,8 @@ public class Model implements IModel, IModel.DataLoaderCallbacks {
     private static IModel sModelInstance;
     private static StockRoomDb sStockRoomDb;
     private static TwoThreadTaskExecutor sExecutor;
-    private static IStockListPresenter sPresenter;
+    private static IStockListPresenter sStockListPresenter;
+    private static IStockDetailsPresenter sStockDetailsPresenter;
     private static IYFNetDao sYFNetDao;
 
 
@@ -31,21 +33,32 @@ public class Model implements IModel, IModel.DataLoaderCallbacks {
     }
 
     public static IModel getInstance(Context context, IStockListPresenter stockListPresenter) {
+        initModel(context);
+        sStockListPresenter = stockListPresenter;
+        return sModelInstance;
+    }
+
+    public static IModel getInstance(Context context, IStockDetailsPresenter stockDetailsPresenter) {
+        initModel(context);
+
+        sStockDetailsPresenter = stockDetailsPresenter;
+        return sModelInstance;
+    }
+
+    private static void initModel(Context context){
         if(sModelInstance==null){
             sModelInstance = new Model();
             sYFNetDao = new YFNetDao();
-           sStockRoomDb = StockRoomDb.getsDatabaseInstance(context);
+            sStockRoomDb = StockRoomDb.getsDatabaseInstance(context);
         }
 
         if(sExecutor == null){
             sExecutor = new TwoThreadTaskExecutor();
         }
 
-        sPresenter = stockListPresenter;
-        return sModelInstance;
     }
 
-    @VisibleForTesting(otherwise = VisibleForTesting.NONE)
+        @VisibleForTesting(otherwise = VisibleForTesting.NONE)
     public StockRoomDb getStockRoomDb(){
         return sStockRoomDb;
     }
@@ -68,8 +81,8 @@ public class Model implements IModel, IModel.DataLoaderCallbacks {
                     sExecutor.mainThreadExecutor().execute(new Runnable() {
                         @Override
                         public void run() {
-                            if(sPresenter!=null){
-                                sPresenter.notifyDatabaseEmpty();
+                            if(sStockListPresenter !=null){
+                                sStockListPresenter.notifyDatabaseEmpty();
                             }
                         }
                     });
@@ -125,6 +138,13 @@ public class Model implements IModel, IModel.DataLoaderCallbacks {
 
 
     @Override
+    public Flowable<StockDto> getASingleStockFlowable(String stockToGet) {
+        //Room library will handle this asynchronously
+        return sStockRoomDb.stockDao().getASingleStockFlowable(stockToGet);
+    }
+
+
+    @Override
     public void deleteASingleStock(String ticker) {
         Runnable deleteStockTask = new Runnable() {
             @Override
@@ -151,24 +171,30 @@ public class Model implements IModel, IModel.DataLoaderCallbacks {
 
     @Override
     public void notifyError(String errorMessage) {
-        if(sPresenter!=null) {
-            sPresenter.notifyError(errorMessage);
+        if(sStockListPresenter !=null) {
+            sStockListPresenter.notifyError(errorMessage);
         }
     }
 
 
     @Override
-    public void unbindPresenter() {
-        if(sPresenter!=null){
-            sPresenter = null;
+    public void unbindStockListPresenter() {
+        if(sStockListPresenter !=null){
+            sStockListPresenter = null;
         }
     }
 
+    @Override
+    public void unbindStockDetailPresenter() {
+        if(sStockDetailsPresenter != null){
+            sStockDetailsPresenter = null;
+        }
+    }
 
     @Override
     public void onDataNotAvailable() {
-        if(sPresenter!=null){
-            sPresenter.notifyDatabaseEmpty();
+        if(sStockListPresenter !=null){
+            sStockListPresenter.notifyDatabaseEmpty();
         }
     }
 
