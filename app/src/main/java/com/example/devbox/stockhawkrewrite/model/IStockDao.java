@@ -13,7 +13,7 @@ import yahoofinance.Stock;
 
 
 /**
- * Created by devbox on 2/21/18.
+ * Room-specific interface
  */
 
 @Dao
