@@ -7,12 +7,13 @@
     <!--details fields-->
     <string name="detail_name">Company name: %1$s</string>
     <string name="detail_ticker">Stock Symbol: %1$s</string>
-    <string name="detail_price">Stock Price: %2$f</string>
-    <string name="detail_ask">Ask: %2$f</string>
-    <string name="detail_bid">Bid: %2$f</string>
-    <string name="detail_percent_change">Change(%): %2$f</string>
-    <string name="detail_currency_change">Change($): %2$f</string>
-    <string name="detail_year_high">Yearh High: %2$f</string>
-    <string name="detail_year_low">Yearh Low: %2$f</string>
+    <string name="detail_price">Stock Price: %1$.2f</string>
+    <string name="detail_ask">Ask: %1$.2f</string>
+    <string name="detail_bid">Bid: %1$.2f</string>
+    <string name="detail_percent_change">Change(%%): %1$.2f</string>
+    <string name="detail_currency_change">Change(\u0024): %1$.2f</string>
+    <string name="detail_year_high">Yearh High: %1$.2f</string>
+    <string name="detail_year_low">Yearh Low: %1$.2f</string>
+    <string name="detail_chart_label">"Stock Pricing Data"</string>
 
 </resources>
