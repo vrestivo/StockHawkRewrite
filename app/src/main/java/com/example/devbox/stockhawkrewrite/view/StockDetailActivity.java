@@ -49,12 +49,10 @@ public class StockDetailActivity extends AppCompatActivity implements IStockDeta
             //TODO restore mStockToShow from parcelable
         }
         else {
-
+            showEmpty();
         }
 
     }
-
-
 
     private void bindViews(){
         mTicker = findViewById(R.id.detail_ticker);
@@ -78,7 +76,9 @@ public class StockDetailActivity extends AppCompatActivity implements IStockDeta
 
     @Override
     public void getStockData(String stockTicker) {
-
+        if(mDetailsPresenter!=null){
+            mDetailsPresenter.getStockByTicker(stockTicker);
+        }
     }
 
     @Override
@@ -86,7 +86,9 @@ public class StockDetailActivity extends AppCompatActivity implements IStockDeta
         if(stockDto!=null){
             mStockToShow = stockDto;
             applyStockData(stockDto);
+            return;
         }
+        showEmpty();
     }
 
     private void applyStockData(StockDto stockDto){
@@ -112,7 +114,7 @@ public class StockDetailActivity extends AppCompatActivity implements IStockDeta
 
     @Override
     public void showEmpty() {
-
+        applyStockData(new StockDto());
     }
 
     @Override

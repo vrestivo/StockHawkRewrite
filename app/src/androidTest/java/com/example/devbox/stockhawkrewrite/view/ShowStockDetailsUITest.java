@@ -3,6 +3,7 @@ package com.example.devbox.stockhawkrewrite.view;
 
 import android.content.Context;
 import android.os.PatternMatcher;
+import android.os.SystemClock;
 import android.support.test.espresso.ViewAssertion;
 import android.support.test.espresso.assertion.ViewAssertions;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
@@ -45,13 +46,11 @@ public class ShowStockDetailsUITest {
     private static StockRoomDb sDatabase;
     private static String sValidStock = "LMT";
     private StockDto mTestSTock;
+    private String mInvalidTicker = "AADDFFBB";
 
 
     @Rule
     public ActivityTestRule<StockDetailActivity> rule = new ActivityTestRule<StockDetailActivity>(StockDetailActivity.class, false, true);
-
-    //@Rule
-    //public IntentsTestRule<StockDetailActivity> detailRule = new IntentsTestRule<>(StockDetailActivity.class);
 
 
     @BeforeClass
@@ -76,10 +75,45 @@ public class ShowStockDetailsUITest {
     }
 
     @Test
+    public void showEmptyUITest(){
+        givenInitializedStockDetailActivity();
+        whenQueriedForInvalidStock();
+        stockDataIsSetToDefaultValues();
+    }
+
+
+    private void givenInitializedStockDetailActivity() {
+        Assert.assertNotNull("activity under test is null", rule.getActivity());
+    }
+
+    private void whenQueriedForInvalidStock() {
+        rule.getActivity().getStockData(mInvalidTicker);
+        SystemClock.sleep(2000);
+    }
+
+    private void stockDataIsSetToDefaultValues() {
+        stockDetailsAreShown(new StockDto());
+    }
+
+
+    private void stockDetailsAreShown(StockDto testStock) {
+        checkViewValue(R.id.detail_company_name, R.string.detail_name, testStock.getName());
+        checkViewValue(R.id.detail_ticker, R.string.detail_ticker, testStock.getTicker());
+        checkViewValue(R.id.detail_price, R.string.detail_price, testStock.getRegPrice());
+        checkViewValue(R.id.detail_ask, R.string.detail_ask, testStock.getAsk());
+        checkViewValue(R.id.detail_bid, R.string.detail_bid, testStock.getBid());
+        checkViewValue(R.id.detail_currency_change, R.string.detail_currency_change, testStock.getChangeCurrency());
+        checkViewValue(R.id.detail_percent_change, R.string.detail_percent_change, testStock.getChangePercent());
+        checkViewValue(R.id.detail_year_high, R.string.detail_year_high, testStock.getYearHigh());
+        checkViewValue(R.id.detail_year_low, R.string.detail_year_low, testStock.getYearLow());
+    }
+
+
+    @Test
     public void showStockDetailUITest(){
         givenInitializedDatabase();
         whenUserClicksOnDesiredStock();
-        stockDetailsAreShown();
+        stockDetailsAreShown(mTestSTock);
     }
 
     private void givenInitializedDatabase() {
@@ -90,22 +124,12 @@ public class ShowStockDetailsUITest {
     }
 
     private void whenUserClicksOnDesiredStock() {
-        rule.getActivity().onDataLoaded(mTestSTock);
+        rule.getActivity().getStockData(sValidStock);
+        SystemClock.sleep(3000);
     }
 
 
 
-    private void stockDetailsAreShown() {
-        checkViewValue(R.id.detail_company_name, R.string.detail_name, mTestSTock.getName());
-        checkViewValue(R.id.detail_ticker, R.string.detail_ticker, mTestSTock.getTicker());
-        checkViewValue(R.id.detail_price, R.string.detail_price, mTestSTock.getRegPrice());
-        checkViewValue(R.id.detail_ask, R.string.detail_ask, mTestSTock.getAsk());
-        checkViewValue(R.id.detail_bid, R.string.detail_bid, mTestSTock.getBid());
-        checkViewValue(R.id.detail_currency_change, R.string.detail_currency_change, mTestSTock.getChangeCurrency());
-        checkViewValue(R.id.detail_percent_change, R.string.detail_percent_change, mTestSTock.getChangePercent());
-        checkViewValue(R.id.detail_year_high, R.string.detail_year_high, mTestSTock.getYearHigh());
-        checkViewValue(R.id.detail_year_low, R.string.detail_year_low, mTestSTock.getYearLow());
-        }
 
 
     /**
