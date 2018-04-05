@@ -27,7 +27,6 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements IStockListView,
         IStockListView.IShowStockDetail {
 
-    public static String ACTION_ADD_STOCK = "ACTION_ADD_STOCK";
     private String LOG_TAG = getClass().getCanonicalName();
     private IStockListPresenter mPresenter;
     private RecyclerView mStockRecyclerView;
@@ -178,5 +177,11 @@ public class MainActivity extends AppCompatActivity implements IStockListView,
     @Override
     public void showStockDetails(String ticker) {
         //TODO launch stock detail activity
+        if(ticker!=null) {
+            Intent showStockDetailsIntent = new Intent(this, StockDetailActivity.class);
+            showStockDetailsIntent.putExtra(StockDetailActivity.EXTRA_TICKER, ticker);
+            startActivity(showStockDetailsIntent);
+        }
+
     }
 }

@@ -1,6 +1,7 @@
 package com.example.devbox.stockhawkrewrite.view;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,6 +74,7 @@ public class StockListAdapter extends RecyclerView.Adapter<StockListAdapter.Stoc
 
         public StockListItemViewHolder(View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
             mmRootView = itemView;
             mmTicker = mmRootView.findViewById(R.id.stock_list_item_ticker);
             mmPrice = mmRootView.findViewById(R.id.stock_list_item_price);
@@ -83,6 +85,7 @@ public class StockListAdapter extends RecyclerView.Adapter<StockListAdapter.Stoc
         public void onClick(View v) {
             //TODO implement
             if(mCallback!=null){
+                Log.v("__stockAdapter", "clicking ticker: " + mmTicker.getText().toString());
                 mCallback.showStockDetails(mmTicker.getText().toString());
             }
         }

@@ -20,6 +20,8 @@ import java.util.List;
 public class StockDetailActivity extends AppCompatActivity implements IStockDetailsView {
 
     public static final String EXTRA_TICKER = "EXTRA_TICKER";
+    public static final String ARG_STOCK_DTO = "ARG_STOCK_DTO";
+
     private StockDto mStockToShow;
     private IStockDetailsPresenter mDetailsPresenter;
     private String mTickerString;
@@ -42,16 +44,32 @@ public class StockDetailActivity extends AppCompatActivity implements IStockDeta
         setContentView(R.layout.detail_view);
 
 
+
         mDetailsPresenter = new StockDetailsPresenter(this, getApplicationContext());
         bindViews();
+        showEmpty();
 
-        if(savedInstanceState!=null){
+        if(savedInstanceState!=null && savedInstanceState.containsKey(ARG_STOCK_DTO)){
             //TODO restore mStockToShow from parcelable
-        }
-        else {
-            showEmpty();
+            mStockToShow = savedInstanceState.getParcelable(ARG_STOCK_DTO);
+            if(mStockToShow!=null){
+                applyStockData(mStockToShow);
+                return;
+            }
         }
 
+        extractTickerFromIntent();
+        if(mTickerString!=null){
+            getStockData(mTickerString);
+        }
+
+    }
+
+    private void extractTickerFromIntent(){
+        Intent intent = getIntent();
+        if(intent!=null && intent.hasExtra(EXTRA_TICKER)){
+            mTickerString = intent.getStringExtra(EXTRA_TICKER);
+        }
     }
 
     private void bindViews(){
@@ -67,11 +85,21 @@ public class StockDetailActivity extends AppCompatActivity implements IStockDeta
         mPriceChart = findViewById(R.id.detail_price_chart);
     }
 
+
+
     @Override
     protected void onStop() {
         super.onStop();
         cleanup();
-        //TODO save Stock to parcelable
+    }
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        if(mStockToShow!=null){
+            outState.putParcelable(ARG_STOCK_DTO, mStockToShow);
+        }
+        super.onSaveInstanceState(outState);
     }
 
     @Override
