@@ -19,5 +19,6 @@
     <string name="dialog_ok_button">OK</string>
     <string name="dialog_cancel_button">Cancel</string>
     <string name="dialog_title">Add A Stock</string>
+    <string name="empty_stock_list_message">You have no stocks added at this time.</string>
 
 </resources>

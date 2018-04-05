@@ -44,7 +44,7 @@ public class StockListPresenter implements IStockListPresenter {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             stockDtoList -> {
-                                if (stockDtoList != null && stockDtoList.size() > 0) {
+                                if (stockDtoList != null) {
                                     mView.onStockListLoaded(stockDtoList);
                                 }
                             }

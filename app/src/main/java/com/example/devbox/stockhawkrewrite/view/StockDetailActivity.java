@@ -44,7 +44,6 @@ public class StockDetailActivity extends AppCompatActivity implements IStockDeta
         setContentView(R.layout.detail_view);
 
 
-
         mDetailsPresenter = new StockDetailsPresenter(this, getApplicationContext());
         bindViews();
         showEmpty();
@@ -155,6 +154,6 @@ public class StockDetailActivity extends AppCompatActivity implements IStockDeta
 
     @Override
     public void displayError(String ErrorMessage) {
-
+        //TODO implement
     }
 }

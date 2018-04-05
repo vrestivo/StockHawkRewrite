@@ -14,6 +14,8 @@ import android.text.Spanned;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckedTextView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.devbox.stockhawkrewrite.R;
@@ -35,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements IStockListView,
     private ItemTouchHelper.SimpleCallback mSwipeCallback;
     private MyIdlingResources myIdlingResources;
     private AddAStockDialog mAddAStockDialog;
+    private TextView mEmptyListMessage;
 
 
     @Override
@@ -42,14 +45,13 @@ public class MainActivity extends AppCompatActivity implements IStockListView,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        mEmptyListMessage = findViewById(R.id.stock_empty_list_message);
         mStockRecyclerView = findViewById(R.id.stock_list);
         mAdapter = new StockListAdapter(this);
         mStockRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         mStockRecyclerView.setAdapter(mAdapter);
         setupSwipeCallback();
         new ItemTouchHelper(mSwipeCallback).attachToRecyclerView(mStockRecyclerView);
-
 
         mAddStockButton = findViewById(R.id.add_stock_button);
         mAddStockButton.setOnClickListener(
@@ -92,13 +94,12 @@ public class MainActivity extends AppCompatActivity implements IStockListView,
     @Override
     protected void onStop() {
         super.onStop();
-        Log.v(LOG_TAG,"_in onStop()");
         mPresenter.cleanup();
     }
 
+
     @Override
     protected void onPause() {
-        Log.v(LOG_TAG,"_in onPause()");
         super.onPause();
     }
 
@@ -123,10 +124,9 @@ public class MainActivity extends AppCompatActivity implements IStockListView,
         }
     }
 
-    @Override
-    public void showStockList() {
 
-    }
+
+
 
     private void showAddStockDialog(){
         if(mAddAStockDialog==null) {
@@ -135,6 +135,7 @@ public class MainActivity extends AppCompatActivity implements IStockListView,
             mAddAStockDialog.show(getSupportFragmentManager(), AddAStockDialog.ADD_STOCK_DIALOG_TAG);
     }
 
+
     @Override
     public void forceDataUpdate() {
         if(mPresenter!=null){
@@ -142,27 +143,36 @@ public class MainActivity extends AppCompatActivity implements IStockListView,
         }
     }
 
+
     @Override
     public void onStockListLoaded(List<StockDto> stockDtoList) {
-        if(stockDtoList == null){
+        if(stockDtoList == null || stockDtoList.size() < 1){
             showListIsEmpty();
             return;
         }
-
-        if(mAdapter!=null){
+        else if(mAdapter!=null){
+            showStockList();
             mAdapter.setStockList(stockDtoList);
-            //TODO delete
-            Toast.makeText(this, "newStockList size: " + stockDtoList.size(), Toast.LENGTH_SHORT).show();
         }
+
         //todo remove test logic
         if(myIdlingResources!=null){
             myIdlingResources.setIdleState(true);
         }
     }
 
+
     @Override
     public void showListIsEmpty() {
-        //TODO implement
+        mStockRecyclerView.setVisibility(View.GONE);
+        mEmptyListMessage.setVisibility(View.VISIBLE);
+    }
+
+
+    @Override
+    public void showStockList() {
+        mEmptyListMessage.setVisibility(View.GONE);
+        mStockRecyclerView.setVisibility(View.VISIBLE);
     }
 
 
@@ -174,9 +184,9 @@ public class MainActivity extends AppCompatActivity implements IStockListView,
         return myIdlingResources;
     }
 
+
     @Override
     public void showStockDetails(String ticker) {
-        //TODO launch stock detail activity
         if(ticker!=null) {
             Intent showStockDetailsIntent = new Intent(this, StockDetailActivity.class);
             showStockDetailsIntent.putExtra(StockDetailActivity.EXTRA_TICKER, ticker);
