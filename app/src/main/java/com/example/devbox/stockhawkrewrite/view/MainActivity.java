@@ -1,6 +1,8 @@
 package com.example.devbox.stockhawkrewrite.view;
 
+import android.content.Intent;
 import android.support.annotation.VisibleForTesting;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,16 +24,18 @@ import com.example.devbox.stockhawkrewrite.presenter.StockListPresenter;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements IStockListView, IStockListView.IShowStockDetail {
+public class MainActivity extends AppCompatActivity implements IStockListView,
+        IStockListView.IShowStockDetail {
 
+    public static String ACTION_ADD_STOCK = "ACTION_ADD_STOCK";
     private String LOG_TAG = getClass().getCanonicalName();
     private IStockListPresenter mPresenter;
     private RecyclerView mStockRecyclerView;
     private StockListAdapter mAdapter;
-    private TextInputEditText mEnterStockField;
-    private Button mAddStockButton;
+    private FloatingActionButton mAddStockButton;
     private ItemTouchHelper.SimpleCallback mSwipeCallback;
     private MyIdlingResources myIdlingResources;
+    private AddAStockDialog mAddAStockDialog;
 
 
     @Override
@@ -39,6 +43,28 @@ public class MainActivity extends AppCompatActivity implements IStockListView, I
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+        mStockRecyclerView = findViewById(R.id.stock_list);
+        mAdapter = new StockListAdapter(this);
+        mStockRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        mStockRecyclerView.setAdapter(mAdapter);
+        setupSwipeCallback();
+        new ItemTouchHelper(mSwipeCallback).attachToRecyclerView(mStockRecyclerView);
+
+
+        mAddStockButton = findViewById(R.id.add_stock_button);
+        mAddStockButton.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showAddStockDialog();
+                    }
+                }
+        );
+    }
+
+
+    private void setupSwipeCallback(){
         mSwipeCallback = new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
@@ -53,43 +79,6 @@ public class MainActivity extends AppCompatActivity implements IStockListView, I
             }
         };
 
-        mStockRecyclerView = findViewById(R.id.stock_list);
-        mAdapter = new StockListAdapter(this);
-        mStockRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        mStockRecyclerView.setAdapter(mAdapter);
-        new ItemTouchHelper(mSwipeCallback).attachToRecyclerView(mStockRecyclerView);
-
-
-        mEnterStockField = findViewById(R.id.ticker_input_edit_text);
-        InputFilter lengthLimit = new InputFilter.LengthFilter(5);
-        InputFilter capsOnly = new InputFilter() {
-            @Override
-            public CharSequence filter(CharSequence charSequence, int i, int i1, Spanned spanned, int i2, int i3) {
-                for (int c = i; c < i1; c++) {
-                    if (!Character.isUpperCase(charSequence.charAt(c))) {
-                        return "";
-                    }
-                }
-                return null;
-            }
-        };
-        mEnterStockField.setFilters(new InputFilter[]{capsOnly, lengthLimit});
-
-        mAddStockButton = findViewById(R.id.add_stock_button);
-        mAddStockButton.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //TODO remove test logic
-                        if(myIdlingResources!=null){
-                            myIdlingResources.setIdleState(false);
-                        }
-
-                        String ticker = mEnterStockField.getText().toString();
-                        addAStock(ticker);
-                    }
-                }
-        );
     }
 
 
@@ -99,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements IStockListView, I
         mPresenter = new StockListPresenter(this, getApplicationContext());
         mPresenter.loadStocks();
     }
+
 
     @Override
     protected void onStop() {
@@ -113,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements IStockListView, I
         super.onPause();
     }
 
+
     @Override
     public void displayError(String errorMessage) {
         Toast.makeText(getApplicationContext(),
@@ -123,6 +114,11 @@ public class MainActivity extends AppCompatActivity implements IStockListView, I
 
     @Override
     public void addAStock(String stockToAdd){
+        //TODO remove test logic
+        if (myIdlingResources != null) {
+            myIdlingResources.setIdleState(false);
+        }
+
         if(mPresenter!=null && stockToAdd != null){
             mPresenter.addAStock(stockToAdd);
         }
@@ -133,7 +129,12 @@ public class MainActivity extends AppCompatActivity implements IStockListView, I
 
     }
 
-
+    private void showAddStockDialog(){
+        if(mAddAStockDialog==null) {
+            mAddAStockDialog = new AddAStockDialog();
+        }
+            mAddAStockDialog.show(getSupportFragmentManager(), AddAStockDialog.ADD_STOCK_DIALOG_TAG);
+    }
 
     @Override
     public void forceDataUpdate() {

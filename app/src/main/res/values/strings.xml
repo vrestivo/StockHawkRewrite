@@ -15,5 +15,9 @@
     <string name="detail_year_high">Yearh High: %1$.2f</string>
     <string name="detail_year_low">Yearh Low: %1$.2f</string>
     <string name="detail_chart_label">"Stock Pricing Data"</string>
+    <string name="dialog_stock_entry_hint">Enter stock ticker</string>
+    <string name="dialog_ok_button">OK</string>
+    <string name="dialog_cancel_button">Cancel</string>
+    <string name="dialog_title">Add A Stock</string>
 
 </resources>

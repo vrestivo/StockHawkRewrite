@@ -130,8 +130,6 @@ public class ShowStockDetailsUITest {
 
 
 
-
-
     /**
      *
      * @param viewId view ID
@@ -144,5 +142,7 @@ public class ShowStockDetailsUITest {
                         ViewMatchers.withText(sContext.getString(stringId, args)))
                 );
     }
+
+
 
 }
