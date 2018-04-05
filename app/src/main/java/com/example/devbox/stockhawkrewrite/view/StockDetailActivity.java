@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.devbox.stockhawkrewrite.R;
+import com.example.devbox.stockhawkrewrite.Util.ChartXValueFormatter;
 import com.example.devbox.stockhawkrewrite.model.StockDto;
 import com.example.devbox.stockhawkrewrite.presenter.IStockDetailsPresenter;
 import com.example.devbox.stockhawkrewrite.presenter.StockDetailsPresenter;
@@ -143,7 +144,11 @@ public class StockDetailActivity extends AppCompatActivity implements IStockDeta
 
     private void loadChartData(List<Entry> entryList){
         if(entryList!=null && entryList.size()>0){
-            LineDataSet dataSet = new LineDataSet(entryList, getString(R.string.detail_chart_label));
+            ChartXValueFormatter xValueFormatter = new ChartXValueFormatter();
+            mPriceChart.getXAxis().setValueFormatter(xValueFormatter);
+            mPriceChart.getXAxis().setLabelRotationAngle(45);
+            mPriceChart.getDescription().setText(getString(R.string.detail_chart_description));
+            LineDataSet dataSet = new LineDataSet(entryList, getString(R.string.detail_chart_label, mTickerString));
             mPriceChart.setData(new LineData(dataSet));
             mPriceChart.invalidate();
         }

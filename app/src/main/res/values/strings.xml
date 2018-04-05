@@ -14,12 +14,13 @@
     <string name="detail_currency_change">Change(\u0024): %1$.2f</string>
     <string name="detail_year_high">Yearh High: %1$.2f</string>
     <string name="detail_year_low">Yearh Low: %1$.2f</string>
-    <string name="detail_chart_label">"Stock Pricing Data"</string>
+    <string name="detail_chart_label">"%1$s price"</string>
     <string name="dialog_stock_entry_hint">Enter stock ticker</string>
     <string name="dialog_ok_button">OK</string>
     <string name="dialog_cancel_button">Cancel</string>
     <string name="dialog_title">Add A Stock</string>
     <string name="empty_stock_list_message">You have no stocks added at this time.</string>
     <string name="detail_title">Details for %1$s</string>
+    <string name="detail_chart_description">Price over time</string>
 
 </resources>
