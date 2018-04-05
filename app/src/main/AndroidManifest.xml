@@ -19,8 +19,10 @@
             </intent-filter>
         </activity>
 
-    <activity android:name=".view.StockDetailActivity">
-
+    <activity
+        android:name=".view.StockDetailActivity"
+        android:parentActivityName=".view.MainActivity"
+        >
     </activity>
     </application>
 

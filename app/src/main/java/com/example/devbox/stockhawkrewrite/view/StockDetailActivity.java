@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.devbox.stockhawkrewrite.R;
@@ -43,8 +45,8 @@ public class StockDetailActivity extends AppCompatActivity implements IStockDeta
         super.onCreate(savedInstanceState);
         setContentView(R.layout.detail_view);
 
-
         mDetailsPresenter = new StockDetailsPresenter(this, getApplicationContext());
+
         bindViews();
         showEmpty();
 
@@ -52,16 +54,24 @@ public class StockDetailActivity extends AppCompatActivity implements IStockDeta
             //TODO restore mStockToShow from parcelable
             mStockToShow = savedInstanceState.getParcelable(ARG_STOCK_DTO);
             if(mStockToShow!=null){
+                mTickerString = mStockToShow.getTicker();
                 applyStockData(mStockToShow);
+                setupToolbar();
                 return;
             }
         }
 
         extractTickerFromIntent();
         if(mTickerString!=null){
+            setupToolbar();
             getStockData(mTickerString);
         }
 
+    }
+
+    private void setupToolbar(){
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle(getString(R.string.detail_title, mTickerString));
     }
 
     private void extractTickerFromIntent(){
@@ -156,4 +166,5 @@ public class StockDetailActivity extends AppCompatActivity implements IStockDeta
     public void displayError(String ErrorMessage) {
         //TODO implement
     }
+
 }

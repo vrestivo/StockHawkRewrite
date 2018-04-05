@@ -68,7 +68,7 @@ public class AddAStockDialog extends AppCompatDialogFragment {
                     return null;
                 }
             };
-            mEnterStockField.setFilters(new InputFilter[]{capsOnly, lengthLimit});
+            mEnterStockField.setFilters(new InputFilter[]{lengthLimit, capsOnly});
         }
     }
 
