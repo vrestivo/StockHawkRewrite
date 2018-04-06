@@ -83,7 +83,7 @@ public class StockListPresenter implements IStockListPresenter {
     @Override
     public void notifyDatabaseEmpty() {
         if (mView != null) {
-            mView.showListIsEmpty();
+            mView.showEmptyList();
         }
     }
 

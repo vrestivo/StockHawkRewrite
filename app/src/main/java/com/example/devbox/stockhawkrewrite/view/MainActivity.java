@@ -3,20 +3,14 @@ package com.example.devbox.stockhawkrewrite.view;
 import android.content.Intent;
 import android.support.annotation.VisibleForTesting;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.text.InputFilter;
-import android.text.Spanned;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.CheckedTextView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -172,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements IStockListView,
     @Override
     public void onStockListLoaded(List<StockDto> stockDtoList) {
         if(stockDtoList == null || stockDtoList.size() < 1){
-            showListIsEmpty();
+            showEmptyList();
             return;
         }
         else if(mAdapter!=null){
@@ -186,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements IStockListView,
 
 
     @Override
-    public void showListIsEmpty() {
+    public void showEmptyList() {
         mStockRecyclerView.setVisibility(View.GONE);
         mEmptyListMessage.setVisibility(View.VISIBLE);
     }

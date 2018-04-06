@@ -21,6 +21,6 @@ public interface IStockListView {
     void showStockList();
     void forceDataUpdate();
     void onStockListLoaded(List<StockDto> stockDtoList);
-    void showListIsEmpty();
+    void showEmptyList();
 }
 
