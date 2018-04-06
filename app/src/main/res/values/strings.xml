@@ -22,5 +22,6 @@
     <string name="empty_stock_list_message">You have no stocks added at this time.</string>
     <string name="detail_title">Details for %1$s</string>
     <string name="detail_chart_description">Price over time</string>
+    <string name="refresh_stock_data">Refresh Data</string>
 
 </resources>

@@ -12,6 +12,8 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckedTextView;
@@ -105,6 +107,26 @@ public class MainActivity extends AppCompatActivity implements IStockListView,
 
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case R.id.action_refresh_stock_data:
+                forceDataUpdate();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
     public void displayError(String errorMessage) {
         Toast.makeText(getApplicationContext(),
                 errorMessage,
@@ -115,9 +137,7 @@ public class MainActivity extends AppCompatActivity implements IStockListView,
     @Override
     public void addAStock(String stockToAdd){
         //TODO remove test logic
-        if (myIdlingResources != null) {
-            myIdlingResources.setIdleState(false);
-        }
+        setIdlingResourcesIdleState(false);
 
         if(mPresenter!=null && stockToAdd != null){
             mPresenter.addAStock(stockToAdd);
@@ -138,6 +158,9 @@ public class MainActivity extends AppCompatActivity implements IStockListView,
 
     @Override
     public void forceDataUpdate() {
+        //TODO remove test logic
+        setIdlingResourcesIdleState(false);
+
         if(mPresenter!=null){
             mPresenter.refreshStockData();
         }
@@ -156,9 +179,8 @@ public class MainActivity extends AppCompatActivity implements IStockListView,
         }
 
         //todo remove test logic
-        if(myIdlingResources!=null){
-            myIdlingResources.setIdleState(true);
-        }
+        setIdlingResourcesIdleState(true);
+
     }
 
 
@@ -184,6 +206,12 @@ public class MainActivity extends AppCompatActivity implements IStockListView,
         return myIdlingResources;
     }
 
+    //TODO remove test logic
+    private void setIdlingResourcesIdleState(boolean idle){
+        if(myIdlingResources!=null){
+            myIdlingResources.setIdleState(idle);
+        }
+    }
 
     @Override
     public void showStockDetails(String ticker) {
