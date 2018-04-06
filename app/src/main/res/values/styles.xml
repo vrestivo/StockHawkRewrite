@@ -13,6 +13,22 @@
         <item name="android:tint">@android:color/white</item>
     </style>
 
+    <style name="StockListItemText">
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:paddingEnd">8dp</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
+        <item name="android:textSize">20sp</item>
+    </style>
 
+    <style name="StockItemTile">
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:layout_marginEnd">16dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:elevation">4dp</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:background">@drawable/stock_list_tile_background</item>
+    </style>
 
 </resources>

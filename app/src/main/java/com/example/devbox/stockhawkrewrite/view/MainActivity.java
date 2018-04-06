@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements IStockListView,
 
         mEmptyListMessage = findViewById(R.id.stock_empty_list_message);
         mStockRecyclerView = findViewById(R.id.stock_list);
-        mAdapter = new StockListAdapter(this);
+        mAdapter = new StockListAdapter(this, getApplicationContext());
         mStockRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         mStockRecyclerView.setAdapter(mAdapter);
         setupSwipeCallback();

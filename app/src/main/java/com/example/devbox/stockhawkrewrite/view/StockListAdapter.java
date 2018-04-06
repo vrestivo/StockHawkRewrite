@@ -1,5 +1,6 @@
 package com.example.devbox.stockhawkrewrite.view;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,8 +21,10 @@ public class StockListAdapter extends RecyclerView.Adapter<StockListAdapter.Stoc
 
     private List<StockDto> mStockList;
     private IStockListView.IShowStockDetail mCallback;
+    private Context mContext;
 
-    public StockListAdapter(IStockListView.IShowStockDetail callback) {
+    public StockListAdapter(IStockListView.IShowStockDetail callback, Context context) {
+        mContext = context;
         mCallback = callback;
     }
 
@@ -40,7 +43,11 @@ public class StockListAdapter extends RecyclerView.Adapter<StockListAdapter.Stoc
             holder.mmId = mStockList.get(position).getId();
             holder.mmTicker.setText(mStockList.get(position).getTicker());
             holder.mmPrice.setText(String.valueOf(mStockList.get(position).getRegPrice()));
-            holder.mmPriceChange.setText(String.valueOf(mStockList.get(position).getChangePercent()));
+            float priceChange = (float) mStockList.get(position).getChangePercent();
+            if(priceChange<0){
+                holder.mmPriceChange.setBackground(mContext.getDrawable(R.drawable.change_red));
+            }
+            holder.mmPriceChange.setText(String.valueOf(priceChange));
         }
     }
 

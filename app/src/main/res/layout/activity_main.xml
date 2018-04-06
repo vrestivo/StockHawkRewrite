@@ -17,6 +17,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:paddingBottom="@dimen/recycler_view_padding_bottom"
+        android:clipToPadding="false"
+        android:background="@color/recycler_view_background"
         />
 
     <TextView
