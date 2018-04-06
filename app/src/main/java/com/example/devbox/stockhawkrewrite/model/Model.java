@@ -78,22 +78,10 @@ public class Model implements IModel, IModel.DataLoaderCallbacks {
                     }
                 }
                 catch (EmptyStockListException emptyListException){
-                    sExecutor.mainThreadExecutor().execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(sStockListPresenter !=null){
-                                sStockListPresenter.notifyDatabaseEmpty();
-                            }
-                        }
-                    });
+                    sendMessageToUIOnMainThread(emptyListException.getMessage());
                 }
                 catch (StockHawkException exception){
-                    sExecutor.mainThreadExecutor().execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            notifyError(exception.getMessage());
-                        }
-                    });
+                    sendMessageToUIOnMainThread(exception.getMessage());
                 }
             }
         };
@@ -110,18 +98,12 @@ public class Model implements IModel, IModel.DataLoaderCallbacks {
                     try{
                         StockDto fetchedStock = sYFNetDao.fetchASingleStock(stockToAdd);
                         sStockRoomDb.stockDao().insertStocks(fetchedStock);
+                        sendMessageToUIOnMainThread(stockToAdd + " Added");
                     }
                     catch (StockHawkException exception){
                         exception.printStackTrace();
                         System.out.println("DEBUG: _inside catch");
-                        sExecutor.mainThreadExecutor().execute(
-                                new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        notifyError(exception.getMessage());
-                                    }
-                                }
-                        );
+                        sendMessageToUIOnMainThread(exception.getMessage());
                     }
                 }
             };
@@ -150,6 +132,7 @@ public class Model implements IModel, IModel.DataLoaderCallbacks {
             @Override
             public void run() {
                 sStockRoomDb.stockDao().deleteASingleStock(ticker);
+                sendMessageToUIOnMainThread(ticker + " deleted");
             }
         };
 
@@ -168,11 +151,21 @@ public class Model implements IModel, IModel.DataLoaderCallbacks {
         sExecutor.iOExecutor().execute(clearAllTask);
     }
 
+    private void sendMessageToUIOnMainThread(String message){
+        sExecutor.mainThreadExecutor().execute(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        sendMessageToUI(message);
+                    }
+                }
+        );
+    }
 
     @Override
-    public void notifyError(String errorMessage) {
+    public void sendMessageToUI(String message) {
         if(sStockListPresenter !=null) {
-            sStockListPresenter.notifyError(errorMessage);
+            sStockListPresenter.sendMessageToUI(message);
         }
     }
 
@@ -201,6 +194,6 @@ public class Model implements IModel, IModel.DataLoaderCallbacks {
 
     @Override
     public void onDataError(String errorMessage) {
-        notifyError(errorMessage);
+        sendMessageToUI(errorMessage);
     }
 }

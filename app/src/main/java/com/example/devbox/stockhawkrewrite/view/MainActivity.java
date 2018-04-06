@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements IStockListView,
     protected void onStart() {
         super.onStart();
         mPresenter = new StockListPresenter(this, getApplicationContext());
-        mPresenter.loadStocks();
+        mPresenter.refreshStockData();
     }
 
 
@@ -127,11 +127,8 @@ public class MainActivity extends AppCompatActivity implements IStockListView,
     }
 
     @Override
-    public void displayError(String errorMessage) {
-        Toast.makeText(getApplicationContext(),
-                errorMessage,
-                Toast.LENGTH_SHORT)
-                .show();
+    public void displayMessage(String message) {
+        showToast(message);
     }
 
     @Override
@@ -145,7 +142,12 @@ public class MainActivity extends AppCompatActivity implements IStockListView,
     }
 
 
-
+    private void showToast(String message){
+        Toast.makeText(getApplicationContext(),
+                message,
+                Toast.LENGTH_SHORT)
+                .show();
+    }
 
 
     private void showAddStockDialog(){
@@ -180,7 +182,6 @@ public class MainActivity extends AppCompatActivity implements IStockListView,
 
         //todo remove test logic
         setIdlingResourcesIdleState(true);
-
     }
 
 

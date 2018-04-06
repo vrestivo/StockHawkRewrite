@@ -144,7 +144,7 @@ public class ModelTest {
     }
 
     private void presenterNotifiedOfError(){
-        verify(mStockListPresenter, atLeastOnce()).notifyError(anyString());
+        verify(mStockListPresenter, atLeastOnce()).sendMessageToUI(anyString());
     }
 
 
@@ -182,11 +182,11 @@ public class ModelTest {
     }
 
     private void whenNotifyErrorIsCalledOnPresenter() {
-        mModelUderTest.notifyError(mTestErrorMessage);
+        mModelUderTest.sendMessageToUI(mTestErrorMessage);
     }
 
     private void verifiedNotifyErrorWasCalled() {
-        verify(mStockListPresenter, atLeastOnce()).notifyError(anyString());
+        verify(mStockListPresenter, atLeastOnce()).sendMessageToUI(anyString());
     }
 
 

@@ -23,7 +23,7 @@ public interface IStockListPresenter {
     void addAStock(String stockTicker);
     void deleteAStock(String stockTickerToDelete);
     void refreshStockData();
-    void notifyError(String errorMessage);
+    void sendMessageToUI(String errorMessage);
     void notifyDatabaseEmpty();
     void cleanup();
 }

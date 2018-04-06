@@ -131,7 +131,7 @@ public class StockListPresenterTest {
     }
 
     private void userIsNotifiedOfError() {
-        verify(sView, atLeastOnce()).displayError(anyString());
+        verify(sView, atLeastOnce()).displayMessage(anyString());
         verify(sView, never()).onStockListLoaded(anyList());
     }
 

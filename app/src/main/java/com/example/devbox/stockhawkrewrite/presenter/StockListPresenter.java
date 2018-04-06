@@ -74,9 +74,9 @@ public class StockListPresenter implements IStockListPresenter {
     }
 
     @Override
-    public void notifyError(String errorMessage) {
+    public void sendMessageToUI(String errorMessage) {
         if (mView != null) {
-            mView.displayError(errorMessage);
+            mView.displayMessage(errorMessage);
         }
     }
 

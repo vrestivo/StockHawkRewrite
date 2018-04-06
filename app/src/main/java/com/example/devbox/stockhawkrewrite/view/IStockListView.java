@@ -14,7 +14,7 @@ public interface IStockListView {
         void showStockDetails(String ticker);
     }
 
-    void displayError(String errorMessage);
+    void displayMessage(String errorMessage);
 
     void addAStock(String stockToAdd);
 

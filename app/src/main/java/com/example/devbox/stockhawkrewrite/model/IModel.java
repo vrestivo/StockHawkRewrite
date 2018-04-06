@@ -31,7 +31,7 @@ public interface IModel {
 
     void clearStockDatabase();
 
-    void notifyError(String errorMessage);
+    void sendMessageToUI(String errorMessage);
 
     void unbindStockListPresenter();
 
