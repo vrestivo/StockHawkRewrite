@@ -4,4 +4,7 @@
     <dimen name="material_dialog_button_padding">8dp</dimen>
     <dimen name="dialog_text_input_margin">24dp</dimen>
     <dimen name="recycler_view_padding_bottom">24dp</dimen>
+    <dimen name="carview_padding">16dp</dimen>
+    <dimen name="stock_chart_padding">8dp</dimen>
+    <dimen name="stock_chart_margin">16dp</dimen>
 </resources>

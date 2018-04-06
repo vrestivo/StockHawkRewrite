@@ -5,7 +5,7 @@
     <string name="btn_add_stock">Add Stock</string>
 
     <!--details fields-->
-    <string name="detail_name">Company name: %1$s</string>
+    <string name="detail_name">%1$s</string>
     <string name="detail_ticker">Stock Symbol: %1$s</string>
     <string name="detail_price">Stock Price: %1$.2f</string>
     <string name="detail_ask">Ask: %1$.2f</string>

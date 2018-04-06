@@ -146,7 +146,7 @@ public class StockDetailActivity extends AppCompatActivity implements IStockDeta
         if(entryList!=null && entryList.size()>0){
             ChartXValueFormatter xValueFormatter = new ChartXValueFormatter();
             mPriceChart.getXAxis().setValueFormatter(xValueFormatter);
-            mPriceChart.getXAxis().setLabelRotationAngle(45);
+            mPriceChart.getXAxis().setLabelRotationAngle(35);
             mPriceChart.getDescription().setText(getString(R.string.detail_chart_description));
             LineDataSet dataSet = new LineDataSet(entryList, getString(R.string.detail_chart_label, mTickerString));
             mPriceChart.setData(new LineData(dataSet));
