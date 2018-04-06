@@ -36,7 +36,7 @@ public class StockListPresenterTest {
     private String mASingleTestTicker = "LMT";
     private String mInvalidStockTicker = "ZZZZaaaaZZZZ";
     private String[] mValidTestStockTickerList = {"LMT", "TSLA", "IBM"};
-    private String mEmptyStockListMessage;
+    private String mEmptyStockListMessage = "Stock list is empty";
 
 
     @Mock
@@ -166,7 +166,7 @@ public class StockListPresenterTest {
 
     private void nothingIsEmittedAndUILayersIsNotified() {
         verify(sView, atLeastOnce())
-                .displayMessage("Stock list is empty");
+                .displayMessage(mEmptyStockListMessage);
     }
 
 
