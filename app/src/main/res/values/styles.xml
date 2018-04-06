@@ -8,4 +8,11 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="MyFabTheme" parent="Theme.AppCompat.Light">
+        <item name="android:colorAccent">@color/secondaryDarkColor</item>
+        <item name="android:tint">@android:color/white</item>
+    </style>
+
+
+
 </resources>
