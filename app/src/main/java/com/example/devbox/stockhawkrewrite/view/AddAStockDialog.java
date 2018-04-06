@@ -57,6 +57,12 @@ public class AddAStockDialog extends AppCompatDialogFragment {
         getDialog().setTitle(R.string.dialog_title);
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        mMainActivity = null;
+    }
+
     private void setInputFilters() {
         if (mEnterStockField != null) {
             InputFilter lengthLimit = new InputFilter.LengthFilter(5);

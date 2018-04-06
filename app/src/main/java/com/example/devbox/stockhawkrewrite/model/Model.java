@@ -92,7 +92,7 @@ public class Model implements IModel, IModel.DataLoaderCallbacks {
     @Override
     public void fetchASingleStockAndStoreInDatabase(String stockToAdd) {
         if(stockToAdd!=null) {
-            Runnable fetchASingleSTockTask = new Runnable() {
+            Runnable fetchASingleStockTask = new Runnable() {
                 @Override
                 public void run() {
                     try{
@@ -107,7 +107,7 @@ public class Model implements IModel, IModel.DataLoaderCallbacks {
                     }
                 }
             };
-            sExecutor.iOExecutor().execute(fetchASingleSTockTask);
+            sExecutor.iOExecutor().execute(fetchASingleStockTask);
         }
     }
 
