@@ -38,6 +38,7 @@ public interface IModel {
     void unbindStockDetailPresenter();
 
 
+    //TODO delete if not needed
     interface DataLoaderCallbacks{
         void onDataNotAvailable();
         void onDataError(String errorMessage);

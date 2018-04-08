@@ -9,7 +9,7 @@ public interface IStockDetailsPresenter {
 
     void onDataLoaded(StockDto stockDto);
 
-    void notifyError(String errorMassage);
+    void sendMessageToUI(String message);
 
     void cleanup();
 
