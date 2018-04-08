@@ -7,11 +7,12 @@ too different from the UI standpoint, the internals
 went through a complete overhaul.
 
 
-
 Heare are some of the features in this version:
 - written using **Test Driven Development** practices
-- uses MVP design pattern
+- uses MVP design pattern (see UML diagram below)
 - uses Room Database
 - uses RxJava for asynchronous tasks
 - uses RxJava for data-driven UI updates
+
+![UML Diagram](https://github.com/vrestivo/StockHawkRewrite/blob/master/stock_hawk_rewrite_uml.png)
 
