@@ -26,5 +26,6 @@
     <string name="message_update_complete">Update complete</string>
     <string name="message_empty_stock_list">You have no stocks added at this time.</string>
 
+    <string name="format_price">%1$.2f</string>
 
 </resources>

@@ -149,6 +149,7 @@ public class StockDetailActivity extends AppCompatActivity implements IStockDeta
             mPriceChart.getXAxis().setLabelRotationAngle(35);
             mPriceChart.getDescription().setText(getString(R.string.detail_chart_description));
             LineDataSet dataSet = new LineDataSet(entryList, getString(R.string.detail_chart_label, mTickerString));
+            mPriceChart.getLegend().setWordWrapEnabled(true);
             mPriceChart.setData(new LineData(dataSet));
             mPriceChart.invalidate();
         }

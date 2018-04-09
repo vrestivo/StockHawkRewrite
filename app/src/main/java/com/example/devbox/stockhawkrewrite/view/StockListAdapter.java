@@ -28,6 +28,7 @@ public class StockListAdapter extends RecyclerView.Adapter<StockListAdapter.Stoc
         mCallback = callback;
     }
 
+
     @Override
     public StockListItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
        View viewHolderRoot = LayoutInflater
@@ -37,24 +38,43 @@ public class StockListAdapter extends RecyclerView.Adapter<StockListAdapter.Stoc
        return new StockListItemViewHolder(viewHolderRoot);
     }
 
+
     @Override
     public void onBindViewHolder(StockListItemViewHolder holder, int position) {
         if(mStockList!=null && position < mStockList.size()){
             holder.mmId = mStockList.get(position).getId();
             holder.mmTicker.setText(mStockList.get(position).getTicker());
-            holder.mmPrice.setText(String.valueOf(mStockList.get(position).getRegPrice()));
-            float priceChange = (float) mStockList.get(position).getChangePercent();
-            if(priceChange<0){
-                holder.mmPriceChange.setBackground(mContext.getDrawable(R.drawable.change_red));
-            }
-            holder.mmPriceChange.setText(String.valueOf(priceChange));
+            formatAndSetPrice(holder, mStockList.get(position));
+            formatAndSetPriceChange(holder, mStockList.get(position));
         }
     }
+
+
+    private void formatAndSetPrice(StockListItemViewHolder holder, StockDto stockDto){
+        if(holder!=null && stockDto!=null) {
+           holder.mmPrice.setText(String.format(holder.mmPriceFormat, stockDto.getRegPrice()));
+        }
+
+    }
+
+
+    private void formatAndSetPriceChange(StockListItemViewHolder holder, StockDto stockDto){
+        if(holder!=null && stockDto!=null) {
+            holder.mmPriceChange.setText(String.format(holder.mmPriceFormat, stockDto.getChangeCurrency()));
+            if (stockDto.getChangeCurrency() < 0) {
+                holder.mmPriceChange.setBackground(mContext.getDrawable(R.drawable.change_red));
+                return;
+            }
+            holder.mmPriceChange.setBackground(mContext.getDrawable(R.drawable.change_green));
+        }
+    }
+
 
     public void setStockList(List<StockDto> newList){
         mStockList = newList;
         notifyDataSetChanged();
     }
+
 
     @Override
     public int getItemCount() {
@@ -64,6 +84,7 @@ public class StockListAdapter extends RecyclerView.Adapter<StockListAdapter.Stoc
         return 0;
     }
 
+
     public String getTickerAtPosition(int position){
         if(mStockList!=null && position < mStockList.size()){
            return mStockList.get(position).getTicker();
@@ -71,17 +92,18 @@ public class StockListAdapter extends RecyclerView.Adapter<StockListAdapter.Stoc
         return "";
     }
 
-    public class StockListItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        View mmRootView;
+    public class StockListItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {        View mmRootView;
         public int mmId;
         public TextView mmTicker;
         public TextView mmPrice;
         public TextView mmPriceChange;
+        public String mmPriceFormat;
 
         public StockListItemViewHolder(View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
+            mmPriceFormat = itemView.getContext().getString(R.string.format_price);
             mmRootView = itemView;
             mmTicker = mmRootView.findViewById(R.id.stock_list_item_ticker);
             mmPrice = mmRootView.findViewById(R.id.stock_list_item_price);
