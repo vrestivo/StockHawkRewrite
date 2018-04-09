@@ -16,3 +16,14 @@ Heare are some of the features in this version:
 
 ![UML Diagram](https://github.com/vrestivo/StockHawkRewrite/blob/master/stock_hawk_rewrite_uml.png)
 
+## Screenshots
+
+
+<div>
+<img aligb="left" src="screenshots/stock_list_port.png" width="31%">
+<img align="top|middle" src="screenshots/lmt_details_port.png" width="31%">
+</div>
+ <br>
+<div>
+<img align="left" src="screenshots/lmt_details_land.png" width="65%">
+</div>
